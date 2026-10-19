@@ -2374,6 +2374,153 @@ func (_c *MockClientCommands_ObjectToSet_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
+// ObjectTypeListConflictingRelations provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) ObjectTypeListConflictingRelations(_a0 context.Context, _a1 *pb.RpcObjectTypeListConflictingRelationsRequest) *pb.RpcObjectTypeListConflictingRelationsResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ObjectTypeListConflictingRelations")
+	}
+
+	var r0 *pb.RpcObjectTypeListConflictingRelationsResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcObjectTypeListConflictingRelationsRequest) *pb.RpcObjectTypeListConflictingRelationsResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcObjectTypeListConflictingRelationsResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_ObjectTypeListConflictingRelations_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ObjectTypeListConflictingRelations'
+type MockClientCommands_ObjectTypeListConflictingRelations_Call struct {
+	*mock.Call
+}
+
+// ObjectTypeListConflictingRelations is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcObjectTypeListConflictingRelationsRequest
+func (_e *MockClientCommands_Expecter) ObjectTypeListConflictingRelations(_a0 interface{}, _a1 interface{}) *MockClientCommands_ObjectTypeListConflictingRelations_Call {
+	return &MockClientCommands_ObjectTypeListConflictingRelations_Call{Call: _e.mock.On("ObjectTypeListConflictingRelations", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_ObjectTypeListConflictingRelations_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcObjectTypeListConflictingRelationsRequest)) *MockClientCommands_ObjectTypeListConflictingRelations_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcObjectTypeListConflictingRelationsRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_ObjectTypeListConflictingRelations_Call) Return(_a0 *pb.RpcObjectTypeListConflictingRelationsResponse) *MockClientCommands_ObjectTypeListConflictingRelations_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_ObjectTypeListConflictingRelations_Call) RunAndReturn(run func(context.Context, *pb.RpcObjectTypeListConflictingRelationsRequest) *pb.RpcObjectTypeListConflictingRelationsResponse) *MockClientCommands_ObjectTypeListConflictingRelations_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ObjectTypeResolveLayoutConflicts provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) ObjectTypeResolveLayoutConflicts(_a0 context.Context, _a1 *pb.RpcObjectTypeResolveLayoutConflictsRequest) *pb.RpcObjectTypeResolveLayoutConflictsResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ObjectTypeResolveLayoutConflicts")
+	}
+
+	var r0 *pb.RpcObjectTypeResolveLayoutConflictsResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcObjectTypeResolveLayoutConflictsRequest) *pb.RpcObjectTypeResolveLayoutConflictsResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcObjectTypeResolveLayoutConflictsResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_ObjectTypeResolveLayoutConflicts_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ObjectTypeResolveLayoutConflicts'
+type MockClientCommands_ObjectTypeResolveLayoutConflicts_Call struct {
+	*mock.Call
+}
+
+// ObjectTypeResolveLayoutConflicts is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcObjectTypeResolveLayoutConflictsRequest
+func (_e *MockClientCommands_Expecter) ObjectTypeResolveLayoutConflicts(_a0 interface{}, _a1 interface{}) *MockClientCommands_ObjectTypeResolveLayoutConflicts_Call {
+	return &MockClientCommands_ObjectTypeResolveLayoutConflicts_Call{Call: _e.mock.On("ObjectTypeResolveLayoutConflicts", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_ObjectTypeResolveLayoutConflicts_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcObjectTypeResolveLayoutConflictsRequest)) *MockClientCommands_ObjectTypeResolveLayoutConflicts_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcObjectTypeResolveLayoutConflictsRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_ObjectTypeResolveLayoutConflicts_Call) Return(_a0 *pb.RpcObjectTypeResolveLayoutConflictsResponse) *MockClientCommands_ObjectTypeResolveLayoutConflicts_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_ObjectTypeResolveLayoutConflicts_Call) RunAndReturn(run func(context.Context, *pb.RpcObjectTypeResolveLayoutConflictsRequest) *pb.RpcObjectTypeResolveLayoutConflictsResponse) *MockClientCommands_ObjectTypeResolveLayoutConflicts_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ObjectTypeSetOrder provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) ObjectTypeSetOrder(_a0 context.Context, _a1 *pb.RpcObjectTypeSetOrderRequest) *pb.RpcObjectTypeSetOrderResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ObjectTypeSetOrder")
+	}
+
+	var r0 *pb.RpcObjectTypeSetOrderResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcObjectTypeSetOrderRequest) *pb.RpcObjectTypeSetOrderResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcObjectTypeSetOrderResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_ObjectTypeSetOrder_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ObjectTypeSetOrder'
+type MockClientCommands_ObjectTypeSetOrder_Call struct {
+	*mock.Call
+}
+
+// ObjectTypeSetOrder is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcObjectTypeSetOrderRequest
+func (_e *MockClientCommands_Expecter) ObjectTypeSetOrder(_a0 interface{}, _a1 interface{}) *MockClientCommands_ObjectTypeSetOrder_Call {
+	return &MockClientCommands_ObjectTypeSetOrder_Call{Call: _e.mock.On("ObjectTypeSetOrder", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_ObjectTypeSetOrder_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcObjectTypeSetOrderRequest)) *MockClientCommands_ObjectTypeSetOrder_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcObjectTypeSetOrderRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_ObjectTypeSetOrder_Call) Return(_a0 *pb.RpcObjectTypeSetOrderResponse) *MockClientCommands_ObjectTypeSetOrder_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_ObjectTypeSetOrder_Call) RunAndReturn(run func(context.Context, *pb.RpcObjectTypeSetOrderRequest) *pb.RpcObjectTypeSetOrderResponse) *MockClientCommands_ObjectTypeSetOrder_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ObjectUndo provides a mock function with given fields: _a0, _a1
 func (_m *MockClientCommands) ObjectUndo(_a0 context.Context, _a1 *pb.RpcObjectUndoRequest) *pb.RpcObjectUndoResponse {
 	ret := _m.Called(_a0, _a1)
@@ -2517,6 +2664,104 @@ func (_c *MockClientCommands_RelationListRemoveOption_Call) Return(_a0 *pb.RpcRe
 }
 
 func (_c *MockClientCommands_RelationListRemoveOption_Call) RunAndReturn(run func(context.Context, *pb.RpcRelationListRemoveOptionRequest) *pb.RpcRelationListRemoveOptionResponse) *MockClientCommands_RelationListRemoveOption_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RelationListWithValue provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) RelationListWithValue(_a0 context.Context, _a1 *pb.RpcRelationListWithValueRequest) *pb.RpcRelationListWithValueResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RelationListWithValue")
+	}
+
+	var r0 *pb.RpcRelationListWithValueResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcRelationListWithValueRequest) *pb.RpcRelationListWithValueResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcRelationListWithValueResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_RelationListWithValue_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RelationListWithValue'
+type MockClientCommands_RelationListWithValue_Call struct {
+	*mock.Call
+}
+
+// RelationListWithValue is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcRelationListWithValueRequest
+func (_e *MockClientCommands_Expecter) RelationListWithValue(_a0 interface{}, _a1 interface{}) *MockClientCommands_RelationListWithValue_Call {
+	return &MockClientCommands_RelationListWithValue_Call{Call: _e.mock.On("RelationListWithValue", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_RelationListWithValue_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcRelationListWithValueRequest)) *MockClientCommands_RelationListWithValue_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcRelationListWithValueRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_RelationListWithValue_Call) Return(_a0 *pb.RpcRelationListWithValueResponse) *MockClientCommands_RelationListWithValue_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_RelationListWithValue_Call) RunAndReturn(run func(context.Context, *pb.RpcRelationListWithValueRequest) *pb.RpcRelationListWithValueResponse) *MockClientCommands_RelationListWithValue_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RelationOptionSetOrder provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) RelationOptionSetOrder(_a0 context.Context, _a1 *pb.RpcRelationOptionSetOrderRequest) *pb.RpcRelationOptionSetOrderResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RelationOptionSetOrder")
+	}
+
+	var r0 *pb.RpcRelationOptionSetOrderResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcRelationOptionSetOrderRequest) *pb.RpcRelationOptionSetOrderResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcRelationOptionSetOrderResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_RelationOptionSetOrder_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RelationOptionSetOrder'
+type MockClientCommands_RelationOptionSetOrder_Call struct {
+	*mock.Call
+}
+
+// RelationOptionSetOrder is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcRelationOptionSetOrderRequest
+func (_e *MockClientCommands_Expecter) RelationOptionSetOrder(_a0 interface{}, _a1 interface{}) *MockClientCommands_RelationOptionSetOrder_Call {
+	return &MockClientCommands_RelationOptionSetOrder_Call{Call: _e.mock.On("RelationOptionSetOrder", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_RelationOptionSetOrder_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcRelationOptionSetOrderRequest)) *MockClientCommands_RelationOptionSetOrder_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcRelationOptionSetOrderRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_RelationOptionSetOrder_Call) Return(_a0 *pb.RpcRelationOptionSetOrderResponse) *MockClientCommands_RelationOptionSetOrder_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_RelationOptionSetOrder_Call) RunAndReturn(run func(context.Context, *pb.RpcRelationOptionSetOrderRequest) *pb.RpcRelationOptionSetOrderResponse) *MockClientCommands_RelationOptionSetOrder_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -339,9 +339,11 @@ func (s *Service) ListProperties(ctx context.Context, spaceId string, offset, li
 	return rows, total, hasMore, nil
 }
 
-// ListPropertyOptions returns the option names (+color) of one
-// select/multiSelect property, with a prefix filter (C10 — tag-like
-// properties can hold thousands of options).
+// ListPropertyOptions returns the option ids, names (+color) of one
+// select/multiSelect property, with a prefix filter (C10: tag-like
+// properties can hold thousands of options). The id is the unambiguous
+// spelling the option order and removal routes take; a value still addresses
+// an option by its name (C2).
 func (s *Service) ListPropertyOptions(ctx context.Context, spaceId, propertyKey, prefix string, offset, limit int) ([]v2model.OptionRow, int, bool, error) {
 	if err := s.ensureSpace(ctx, spaceId); err != nil {
 		return nil, 0, false, err
@@ -365,7 +367,7 @@ func (s *Service) ListPropertyOptions(ctx context.Context, spaceId, propertyKey,
 		if prefix != "" && !strings.HasPrefix(strings.ToLower(option.Text), strings.ToLower(prefix)) {
 			continue
 		}
-		rows = append(rows, v2model.OptionRow{Name: option.Text, Color: option.Color})
+		rows = append(rows, v2model.OptionRow{Id: option.Id, Name: option.Text, Color: option.Color})
 	}
 	sort.Slice(rows, func(i, j int) bool { return rows[i].Name < rows[j].Name })
 

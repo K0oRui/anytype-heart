@@ -173,6 +173,13 @@ var v2RouteAuthz = map[string]RouteAuthz{
 	routeKey(http.MethodPut, "/v2/spaces/:space_id/objects/:object_id/icon"):       {Verb: RouteVerbWrite},
 	routeKey(http.MethodPut, "/v2/spaces/:space_id/objects/:object_id/cover"):      {Verb: RouteVerbWrite},
 	routeKey(http.MethodPut, "/v2/spaces/:space_id/objects/:object_id/items"):      {Verb: RouteVerbWrite},
+	// schema administration surface (registerSchemaAdminRoutes)
+	routeKey(http.MethodDelete, "/v2/spaces/:space_id/properties/:key/options/:option"): {Verb: RouteVerbWrite},
+	routeKey(http.MethodPut, "/v2/spaces/:space_id/properties/:key/options/order"):      {Verb: RouteVerbWrite},
+	routeKey(http.MethodGet, "/v2/spaces/:space_id/properties/with-value"):              {Verb: RouteVerbRead},
+	routeKey(http.MethodGet, "/v2/spaces/:space_id/types/:type/conflicts"):              {Verb: RouteVerbRead},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/types/:type/resolve"):               {Verb: RouteVerbWrite},
+	routeKey(http.MethodPut, "/v2/spaces/:space_id/types/order"):                        {Verb: RouteVerbWrite},
 	// chat surface (registerChatRoutes)
 	routeKey(http.MethodGet, "/v2/spaces/:space_id/chats"):                                          {Verb: RouteVerbRead},
 	routeKey(http.MethodPost, "/v2/spaces/:space_id/chats"):                                         {Verb: RouteVerbWrite},

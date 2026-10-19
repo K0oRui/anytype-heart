@@ -292,7 +292,14 @@ type ClientCommands interface {
 	// Tags
 	ObjectCreateRelationOption(context.Context, *pb.RpcObjectCreateRelationOptionRequest) *pb.RpcObjectCreateRelationOptionResponse
 	RelationListRemoveOption(context.Context, *pb.RpcRelationListRemoveOptionRequest) *pb.RpcRelationListRemoveOptionResponse
+	RelationOptionSetOrder(context.Context, *pb.RpcRelationOptionSetOrderRequest) *pb.RpcRelationOptionSetOrderResponse
 	RelationOptions(context.Context, *pb.RpcRelationOptionsRequest) *pb.RpcRelationOptionsResponse
+	RelationListWithValue(context.Context, *pb.RpcRelationListWithValueRequest) *pb.RpcRelationListWithValueResponse
+
+	// Type conflicts and order
+	ObjectTypeListConflictingRelations(context.Context, *pb.RpcObjectTypeListConflictingRelationsRequest) *pb.RpcObjectTypeListConflictingRelationsResponse
+	ObjectTypeResolveLayoutConflicts(context.Context, *pb.RpcObjectTypeResolveLayoutConflictsRequest) *pb.RpcObjectTypeResolveLayoutConflictsResponse
+	ObjectTypeSetOrder(context.Context, *pb.RpcObjectTypeSetOrderRequest) *pb.RpcObjectTypeSetOrderResponse
 
 	// File
 	FileUpload(context.Context, *pb.RpcFileUploadRequest) *pb.RpcFileUploadResponse

@@ -82,6 +82,9 @@ var knownRouteParams = map[string]bool{
 	"widget_id":      true,
 	"invite_cid":     true,
 	"space_view_id":  true,
+	// the select option a property route addresses, an id or a name from
+	// that property's own option list
+	"option": true,
 }
 
 // substituteRouteParams replaces every :param / *param segment so gin

@@ -453,6 +453,7 @@ func registerCreateRoutes(v2 *gin.RouterGroup, deps RouteDeps, idempotencyMW gin
 	)
 	registerSpaceAdminRoutes(v2, deps, idempotencyMW)
 	registerObjectAdminRoutes(v2, deps, idempotencyMW)
+	registerSchemaAdminRoutes(v2, deps, idempotencyMW)
 }
 
 // registerObjectAdminRoutes registers the object administration surface: the
@@ -531,6 +532,45 @@ func registerObjectAdminRoutes(v2 *gin.RouterGroup, deps RouteDeps, idempotencyM
 		idempotencyMW,
 		deps.AnalyticsEvent("V2SetObjectItemsOrder"),
 		v2handler.SetObjectItemsOrderHandler(deps.Service),
+	)
+}
+
+// registerSchemaAdminRoutes registers the property and type maintenance
+// surface: the select-option verbs, the reverse property lookup, and the type
+// conflict and ordering verbs. Every mutation carries the C8 idempotency
+// middleware and the write limiter; the two reads are plain.
+func registerSchemaAdminRoutes(v2 *gin.RouterGroup, deps RouteDeps, idempotencyMW gin.HandlerFunc) {
+	v2.DELETE("/spaces/:space_id/properties/:key/options/:option",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2RemovePropertyOption"),
+		v2handler.RemovePropertyOptionHandler(deps.Service),
+	)
+	v2.PUT("/spaces/:space_id/properties/:key/options/order",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetPropertyOptionsOrder"),
+		v2handler.SetPropertyOptionsOrderHandler(deps.Service),
+	)
+	v2.GET("/spaces/:space_id/properties/with-value",
+		deps.AnalyticsEvent("V2ListPropertiesWithValue"),
+		v2handler.ListPropertiesWithValueHandler(deps.Service),
+	)
+	v2.GET("/spaces/:space_id/types/:type/conflicts",
+		deps.AnalyticsEvent("V2ListTypeConflicts"),
+		v2handler.ListTypeConflictsHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/types/:type/resolve",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2ResolveTypeConflicts"),
+		v2handler.ResolveTypeConflictsHandler(deps.Service),
+	)
+	v2.PUT("/spaces/:space_id/types/order",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetTypesOrder"),
+		v2handler.SetTypesOrderHandler(deps.Service),
 	)
 }
 

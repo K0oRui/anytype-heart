@@ -182,6 +182,10 @@ IDEMPOTENT_OPERATIONS = {
     "set_object_icon",
     "set_object_cover",
     "set_object_items_order",
+    "remove_property_option",
+    "set_property_options_order",
+    "resolve_type_conflicts",
+    "set_types_order",
 }
 
 WRITE_LIMITED_OPERATIONS = IDEMPOTENT_OPERATIONS - {"validate"}
@@ -227,6 +231,8 @@ REQUEST_BODY_LIMITED_OPERATIONS = {
     "set_object_icon",
     "set_object_cover",
     "set_object_items_order",
+    "set_property_options_order",
+    "set_types_order",
 }
 
 

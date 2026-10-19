@@ -106,7 +106,7 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 	var jsonDoc responseContractDocument
 	require.NoError(t, json.Unmarshal(jsonBody, &jsonDoc))
 	jsonOperations := responseContractOperations(t, jsonDoc)
-	require.Len(t, jsonOperations, 89)
+	require.Len(t, jsonOperations, 95)
 
 	yamlBody, err := os.ReadFile("../docs/v2/openapi.yaml")
 	require.NoError(t, err)
@@ -200,7 +200,7 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 	for _, operation := range jsonOperations {
 		pairCount += len(operation.Responses)
 	}
-	assert.Equal(t, 612, pairCount, "the checked-in response inventory changes only deliberately")
+	assert.Equal(t, 652, pairCount, "the checked-in response inventory changes only deliberately")
 
 	dryRunCreates := stringSet(
 		"add_chat_message", "create_chat", "create_collection", "create_invite", "create_object", "create_property",
@@ -227,6 +227,7 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 		"duplicate_object", "set_objects_archived", "set_objects_type", "set_objects_properties",
 		"set_object_layout", "convert_object", "set_object_source", "refresh_object",
 		"create_object_from_url", "set_object_icon", "set_object_cover", "set_object_items_order",
+		"remove_property_option", "set_property_options_order", "resolve_type_conflicts", "set_types_order",
 	)
 	requestBodyLimited := stringSet(
 		"add_chat_message", "create_chat", "create_collection", "create_property", "create_query", "create_space",
@@ -239,6 +240,7 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 		"set_objects_archived", "set_objects_type", "set_objects_properties", "set_object_layout",
 		"convert_object", "set_object_source", "create_object_from_url", "set_object_icon",
 		"set_object_cover", "set_object_items_order",
+		"set_property_options_order", "set_types_order",
 	)
 
 	// A concurrency cap is not a rate limit: the streams refuse when too many

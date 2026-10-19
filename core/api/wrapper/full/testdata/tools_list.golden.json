@@ -2498,6 +2498,41 @@
    }
   },
   {
+   "name": "list_properties_with_value",
+   "description": "List properties carrying a value. Names the properties that hold the given value somewhere in the space, each with the number of objects holding it. It is the reverse of a read: the question \"what points at this\" an object id, a date object id or a text value asks. The value is matched as a string, so a number stored as a number is not found by its digits.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "limit": {
+      "default": 25,
+      "description": "Items to return",
+      "type": "integer"
+     },
+     "offset": {
+      "default": 0,
+      "description": "Items to skip",
+      "type": "integer"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "value": {
+      "description": "The value to look for, as it is spelled in a property",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id",
+     "value"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "readOnlyHint": true
+   }
+  },
+  {
    "name": "update_property",
    "description": "Update a property. Only the display name can change. The key is the property's identity, and its format is fixed once it exists.",
    "inputSchema": {
@@ -2595,6 +2630,77 @@
    },
    "annotations": {
     "readOnlyHint": true
+   }
+  },
+  {
+   "name": "set_property_options_order",
+   "description": "Set a property's option order. Replaces the option order of a select or multiSelect property with the given list. It is the whole order, so every option the property holds must be named once; an option left out is refused rather than left to interleave. The option list route sorts by name, and this is what the picker shows.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "key": {
+      "description": "Property key, from `list_properties`",
+      "type": "string"
+     },
+     "options": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "key",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "remove_property_option",
+   "description": "Remove a property option. Deletes one option from a select or multiSelect property. An option objects still hold is refused with a 409 unless delete_in_objects is true; those objects then keep a value the property no longer offers. The option is named by its id or by its name, both served by the property's option list.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "delete_in_objects": {
+      "description": "Remove the option even while objects hold it",
+      "type": "boolean"
+     },
+     "dry_run": {
+      "description": "Validate without removing the option",
+      "type": "boolean"
+     },
+     "key": {
+      "description": "Property key, from `list_properties`",
+      "type": "string"
+     },
+     "option": {
+      "description": "Option id or name, from `list_property_options`",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "key",
+     "option",
+     "space_id"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "destructiveHint": true
    }
   },
   {
@@ -4030,6 +4136,34 @@
    }
   },
   {
+   "name": "set_types_order",
+   "description": "Set the type order. The types listed come first, in the given order, and the rest keep their relative order. This is the order the app offers types in, and it is written as one list so one unknown spelling refuses the whole order.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "types": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
    "name": "get_type",
    "description": "Get a type",
    "inputSchema": {
@@ -4525,6 +4659,67 @@
    },
    "annotations": {
     "destructiveHint": true
+   }
+  },
+  {
+   "name": "list_type_conflicts",
+   "description": "List a type's conflicting properties. The properties objects of this type carry that the type does not recommend. It is the read half of the app's conflict notice, and the repair is the resolve route beside it.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "limit": {
+      "default": 25,
+      "description": "Items to return",
+      "type": "integer"
+     },
+     "offset": {
+      "default": 0,
+      "description": "Items to skip",
+      "type": "integer"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "type": {
+      "description": "Type key, from `list_types`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id",
+     "type"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "readOnlyHint": true
+   }
+  },
+  {
+   "name": "resolve_type_conflicts",
+   "description": "Resolve a type's conflicts. Brings every object of this type in line with the type's current layout and recommended properties. It is the repair for what the conflict read reports, and it is the caller's to run after a type was edited.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without aligning anything",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "type": {
+      "description": "Type key, from `list_types`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id",
+     "type"
+    ],
+    "type": "object"
    }
   },
   {

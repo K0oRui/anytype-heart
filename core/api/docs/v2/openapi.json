@@ -1052,6 +1052,40 @@
         },
         "type": "object"
       },
+      "ListResponse-RelationValueRow": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/RelationValueRow"
+            },
+            "type": "array",
+            "uniqueItems": false
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/Issue"
+            },
+            "type": "array",
+            "uniqueItems": false
+          }
+        },
+        "type": "object"
+      },
       "ListResponse-TemplateRow": {
         "properties": {
           "data": {
@@ -1352,8 +1386,26 @@
           "color": {
             "type": "string"
           },
+          "id": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PropertyOptionsOrder": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/OptionRow"
+            },
+            "type": "array",
+            "uniqueItems": false
           }
         },
         "type": "object"
@@ -1391,6 +1443,23 @@
             },
             "description": "Query parameters to send with the operation, spelled in the hint as ?name=value pairs joined by & and sorted by name, values verbatim.",
             "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "RelationValueRow": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "format": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -1581,6 +1650,30 @@
         },
         "type": "object"
       },
+      "SetPropertyOptionsOrderRequest": {
+        "properties": {
+          "options": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": false
+          }
+        },
+        "type": "object"
+      },
+      "SetTypesOrderRequest": {
+        "properties": {
+          "types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": false
+          }
+        },
+        "type": "object"
+      },
       "SideEffects": {
         "properties": {
           "options": {
@@ -1678,6 +1771,21 @@
           },
           "name": {
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TypesOrder": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean"
+          },
+          "types": {
+            "items": {
+              "$ref": "#/components/schemas/TypeRow"
+            },
+            "type": "array",
+            "uniqueItems": false
           }
         },
         "type": "object"
@@ -9215,6 +9323,97 @@
         ]
       }
     },
+    "/v2/spaces/{space_id}/properties/with-value": {
+      "get": {
+        "description": "Names the properties that hold the given value somewhere in the space, each with the number of objects holding it. It is the reverse of a read: the question \"what points at this\" an object id, a date object id or a text value asks. The value is matched as a string, so a number stored as a number is not found by its digits.",
+        "operationId": "list_properties_with_value",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The value to look for, as it is spelled in a property",
+            "in": "query",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Items to skip",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Items to return",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 25,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse-RelationValueRow"
+                }
+              }
+            },
+            "description": "Property rows with a count"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Value is missing"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space not found or unavailable"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "List properties carrying a value",
+        "tags": [
+          "Properties"
+        ]
+      }
+    },
     "/v2/spaces/{space_id}/properties/{key}": {
       "delete": {
         "operationId": "delete_property",
@@ -9490,6 +9689,220 @@
           }
         ],
         "summary": "List property options",
+        "tags": [
+          "Properties"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/properties/{key}/options/order": {
+      "put": {
+        "description": "Replaces the option order of a select or multiSelect property with the given list. It is the whole order, so every option the property holds must be named once; an option left out is refused rather than left to interleave. The option list route sorts by name, and this is what the picker shows.",
+        "operationId": "set_property_options_order",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Property key, from GET /v2/spaces/{space_id}/properties",
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without committing",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPropertyOptionsOrderRequest"
+              }
+            }
+          },
+          "description": "The new option order",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyOptionsOrder"
+                }
+              }
+            },
+            "description": "The property's options in their stored order"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Unknown, duplicated or missing option"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Property or space not found"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Set a property's option order",
+        "tags": [
+          "Properties"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/properties/{key}/options/{option}": {
+      "delete": {
+        "description": "Deletes one option from a select or multiSelect property. An option objects still hold is refused with a 409 unless delete_in_objects is true; those objects then keep a value the property no longer offers. The option is named by its id or by its name, both served by the property's option list.",
+        "operationId": "remove_property_option",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Property key, from GET /v2/spaces/{space_id}/properties",
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Option id or name, from GET /v2/spaces/{space_id}/properties/{key}/options",
+            "in": "path",
+            "name": "option",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Remove the option even while objects hold it",
+            "in": "query",
+            "name": "delete_in_objects",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Validate without removing the option",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Option removed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Property, option or space not found"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Remove a property option",
         "tags": [
           "Properties"
         ]
@@ -11217,6 +11630,106 @@
         ]
       }
     },
+    "/v2/spaces/{space_id}/types/order": {
+      "put": {
+        "description": "The types listed come first, in the given order, and the rest keep their relative order. This is the order the app offers types in, and it is written as one list so one unknown spelling refuses the whole order.",
+        "operationId": "set_types_order",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without committing",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetTypesOrderRequest"
+              }
+            }
+          },
+          "description": "The types that move, in their new order",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TypesOrder"
+                }
+              }
+            },
+            "description": "The types that moved, in their new order"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Unknown or duplicated type"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Type or space not found"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Set the type order",
+        "tags": [
+          "Types"
+        ]
+      }
+    },
     "/v2/spaces/{space_id}/types/{type}": {
       "delete": {
         "operationId": "delete_type",
@@ -11931,6 +12444,178 @@
           }
         ],
         "summary": "Update a type",
+        "tags": [
+          "Types"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/types/{type}/conflicts": {
+      "get": {
+        "description": "The properties objects of this type carry that the type does not recommend. It is the read half of the app's conflict notice, and the repair is the resolve route beside it.",
+        "operationId": "list_type_conflicts",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Type key, from GET /v2/spaces/{space_id}/types",
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Items to skip",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Items to return",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 25,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse-PropertyRow"
+                }
+              }
+            },
+            "description": "Conflicting property rows"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Type or space not found"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "List a type's conflicting properties",
+        "tags": [
+          "Types"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/types/{type}/resolve": {
+      "post": {
+        "description": "Brings every object of this type in line with the type's current layout and recommended properties. It is the repair for what the conflict read reports, and it is the caller's to run after a type was edited.",
+        "operationId": "resolve_type_conflicts",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Type key, from GET /v2/spaces/{space_id}/types",
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate without aligning anything",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Objects aligned"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Type or space not found"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Resolve a type's conflicts",
         "tags": [
           "Types"
         ]

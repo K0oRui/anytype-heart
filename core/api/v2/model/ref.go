@@ -123,6 +123,9 @@ var operations = map[string]operation{
 	OpDeleteProperty:          {"DELETE", "/v2/spaces/{space_id}/properties/{key}"},
 	OpUpdateProperty:          {"PATCH", "/v2/spaces/{space_id}/properties/{key}"},
 	OpListPropertyOptions:     {"GET", "/v2/spaces/{space_id}/properties/{key}/options"},
+	OpRemovePropertyOption:    {"DELETE", "/v2/spaces/{space_id}/properties/{key}/options/{option}"},
+	OpSetPropertyOptionsOrder: {"PUT", "/v2/spaces/{space_id}/properties/{key}/options/order"},
+	OpListPropertiesWithValue: {"GET", "/v2/spaces/{space_id}/properties/with-value"},
 	OpCreateQuery:             {"POST", "/v2/spaces/{space_id}/queries"},
 	OpGetQueryObjects:         {"GET", "/v2/spaces/{space_id}/queries/{query_id}/objects"},
 	OpGetQueryViews:           {"GET", "/v2/spaces/{space_id}/queries/{query_id}/views"},
@@ -135,6 +138,9 @@ var operations = map[string]operation{
 	OpDeleteType:              {"DELETE", "/v2/spaces/{space_id}/types/{type}"},
 	OpGetType:                 {"GET", "/v2/spaces/{space_id}/types/{type}"},
 	OpUpdateType:              {"PATCH", "/v2/spaces/{space_id}/types/{type}"},
+	OpListTypeConflicts:       {"GET", "/v2/spaces/{space_id}/types/{type}/conflicts"},
+	OpResolveTypeConflicts:    {"POST", "/v2/spaces/{space_id}/types/{type}/resolve"},
+	OpSetTypesOrder:           {"PUT", "/v2/spaces/{space_id}/types/order"},
 	OpValidate:                {"POST", "/v2/validate"},
 	OpListWidgets:             {"GET", "/v2/spaces/{space_id}/widgets"},
 	OpCreateWidget:            {"POST", "/v2/spaces/{space_id}/widgets"},
@@ -144,76 +150,82 @@ var operations = map[string]operation{
 
 // The operationIds, as constants so a hint site cannot misspell one.
 const (
-	OpAuthWhoami           = "auth_whoami"
-	OpCreateAuthChallenge  = "create_auth_challenge"
-	OpCreateApiKey         = "create_api_key"
-	OpListSchemas          = "list_schemas"
-	OpGetOpSchema          = "get_op_schema"
-	OpGetSchema            = "get_schema"
-	OpSearchGlobal         = "search_global"
-	OpListSpaces           = "list_spaces"
-	OpCreateSpace          = "create_space"
-	OpGetSpace             = "get_space"
-	OpUpdateSpace          = "update_space"
-	OpListChats            = "list_chats"
-	OpCreateChat           = "create_chat"
-	OpStreamSpaceChats     = "stream_space_chats"
-	OpGetChatMessages      = "get_chat_messages"
-	OpAddChatMessage       = "add_chat_message"
-	OpStreamChatMessages   = "stream_chat_messages"
-	OpDeleteChatMessage    = "delete_chat_message"
-	OpEditChatMessage      = "edit_chat_message"
-	OpToggleChatReaction   = "toggle_chat_reaction"
-	OpReadChat             = "read_chat"
-	OpPublishChatStatus    = "publish_chat_status"
-	OpCreateCollection     = "create_collection"
-	OpGetCollectionObjects = "get_collection_objects"
-	OpGetCollectionViews   = "get_collection_views"
-	OpUploadFile           = "upload_file"
-	OpDownloadFile         = "download_file"
-	OpHeadFile             = "head_file"
-	OpListMembers          = "list_members"
-	OpGetMemberMe          = "get_member_me"
-	OpListObjects          = "list_objects"
-	OpCreateObject         = "create_object"
-	OpDeleteObject         = "delete_object"
-	OpGetObject            = "get_object"
-	OpPatchObject          = "patch_object"
-	OpCreateDiscussion     = "create_discussion"
-	OpDuplicateObject      = "duplicate_object"
-	OpSetObjectsArchived   = "set_objects_archived"
-	OpSetObjectsType       = "set_objects_type"
-	OpSetObjectsProperties = "set_objects_properties"
-	OpSetObjectLayout      = "set_object_layout"
-	OpConvertObject        = "convert_object"
-	OpSetObjectSource      = "set_object_source"
-	OpRefreshObject        = "refresh_object"
-	OpCreateObjectFromUrl  = "create_object_from_url"
-	OpSetObjectIcon        = "set_object_icon"
-	OpSetObjectCover       = "set_object_cover"
-	OpSetObjectItemsOrder  = "set_object_items_order"
-	OpListProperties       = "list_properties"
-	OpCreateProperty       = "create_property"
-	OpDeleteProperty       = "delete_property"
-	OpUpdateProperty       = "update_property"
-	OpListPropertyOptions  = "list_property_options"
-	OpCreateQuery          = "create_query"
-	OpGetQueryObjects      = "get_query_objects"
-	OpGetQueryViews        = "get_query_views"
-	OpSearchSpace          = "search_space"
-	OpStreamSpaceSearch    = "stream_space_search"
-	OpListTemplates        = "list_templates"
-	OpCreateTemplate       = "create_template"
-	OpListTypes            = "list_types"
-	OpCreateType           = "create_type"
-	OpDeleteType           = "delete_type"
-	OpGetType              = "get_type"
-	OpUpdateType           = "update_type"
-	OpValidate             = "validate"
-	OpListWidgets          = "list_widgets"
-	OpCreateWidget         = "create_widget"
-	OpUpdateWidget         = "update_widget"
-	OpDeleteWidget         = "delete_widget"
+	OpAuthWhoami              = "auth_whoami"
+	OpCreateAuthChallenge     = "create_auth_challenge"
+	OpCreateApiKey            = "create_api_key"
+	OpListSchemas             = "list_schemas"
+	OpGetOpSchema             = "get_op_schema"
+	OpGetSchema               = "get_schema"
+	OpSearchGlobal            = "search_global"
+	OpListSpaces              = "list_spaces"
+	OpCreateSpace             = "create_space"
+	OpGetSpace                = "get_space"
+	OpUpdateSpace             = "update_space"
+	OpListChats               = "list_chats"
+	OpCreateChat              = "create_chat"
+	OpStreamSpaceChats        = "stream_space_chats"
+	OpGetChatMessages         = "get_chat_messages"
+	OpAddChatMessage          = "add_chat_message"
+	OpStreamChatMessages      = "stream_chat_messages"
+	OpDeleteChatMessage       = "delete_chat_message"
+	OpEditChatMessage         = "edit_chat_message"
+	OpToggleChatReaction      = "toggle_chat_reaction"
+	OpReadChat                = "read_chat"
+	OpPublishChatStatus       = "publish_chat_status"
+	OpCreateCollection        = "create_collection"
+	OpGetCollectionObjects    = "get_collection_objects"
+	OpGetCollectionViews      = "get_collection_views"
+	OpUploadFile              = "upload_file"
+	OpDownloadFile            = "download_file"
+	OpHeadFile                = "head_file"
+	OpListMembers             = "list_members"
+	OpGetMemberMe             = "get_member_me"
+	OpListObjects             = "list_objects"
+	OpCreateObject            = "create_object"
+	OpDeleteObject            = "delete_object"
+	OpGetObject               = "get_object"
+	OpPatchObject             = "patch_object"
+	OpCreateDiscussion        = "create_discussion"
+	OpDuplicateObject         = "duplicate_object"
+	OpSetObjectsArchived      = "set_objects_archived"
+	OpSetObjectsType          = "set_objects_type"
+	OpSetObjectsProperties    = "set_objects_properties"
+	OpSetObjectLayout         = "set_object_layout"
+	OpConvertObject           = "convert_object"
+	OpSetObjectSource         = "set_object_source"
+	OpRefreshObject           = "refresh_object"
+	OpCreateObjectFromUrl     = "create_object_from_url"
+	OpSetObjectIcon           = "set_object_icon"
+	OpSetObjectCover          = "set_object_cover"
+	OpSetObjectItemsOrder     = "set_object_items_order"
+	OpListProperties          = "list_properties"
+	OpCreateProperty          = "create_property"
+	OpDeleteProperty          = "delete_property"
+	OpUpdateProperty          = "update_property"
+	OpListPropertyOptions     = "list_property_options"
+	OpRemovePropertyOption    = "remove_property_option"
+	OpSetPropertyOptionsOrder = "set_property_options_order"
+	OpListPropertiesWithValue = "list_properties_with_value"
+	OpCreateQuery             = "create_query"
+	OpGetQueryObjects         = "get_query_objects"
+	OpGetQueryViews           = "get_query_views"
+	OpSearchSpace             = "search_space"
+	OpStreamSpaceSearch       = "stream_space_search"
+	OpListTemplates           = "list_templates"
+	OpCreateTemplate          = "create_template"
+	OpListTypes               = "list_types"
+	OpCreateType              = "create_type"
+	OpDeleteType              = "delete_type"
+	OpGetType                 = "get_type"
+	OpUpdateType              = "update_type"
+	OpListTypeConflicts       = "list_type_conflicts"
+	OpResolveTypeConflicts    = "resolve_type_conflicts"
+	OpSetTypesOrder           = "set_types_order"
+	OpValidate                = "validate"
+	OpListWidgets             = "list_widgets"
+	OpCreateWidget            = "create_widget"
+	OpUpdateWidget            = "update_widget"
+	OpDeleteWidget            = "delete_widget"
 	// space administration
 	OpGetInvite               = "get_invite"
 	OpCreateInvite            = "create_invite"
@@ -399,6 +411,24 @@ func RefDeleteProperty(spaceId, key string) Ref {
 }
 func RefListPropertyOptions(spaceId, key string) Ref {
 	return NewRef(OpListPropertyOptions, "space_id", spaceId, "key", key)
+}
+func RefRemovePropertyOption(spaceId, key, option string) Ref {
+	return NewRef(OpRemovePropertyOption, "space_id", spaceId, "key", key, "option", option)
+}
+func RefSetPropertyOptionsOrder(spaceId, key string) Ref {
+	return NewRef(OpSetPropertyOptionsOrder, "space_id", spaceId, "key", key)
+}
+func RefListPropertiesWithValue(spaceId string) Ref {
+	return NewRef(OpListPropertiesWithValue, "space_id", spaceId)
+}
+func RefListTypeConflicts(spaceId, typeKey string) Ref {
+	return NewRef(OpListTypeConflicts, "space_id", spaceId, "type", typeKey)
+}
+func RefResolveTypeConflicts(spaceId, typeKey string) Ref {
+	return NewRef(OpResolveTypeConflicts, "space_id", spaceId, "type", typeKey)
+}
+func RefSetTypesOrder(spaceId string) Ref {
+	return NewRef(OpSetTypesOrder, "space_id", spaceId)
 }
 
 func RefListMembers(spaceId string) Ref { return NewRef(OpListMembers, "space_id", spaceId) }

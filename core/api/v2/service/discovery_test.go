@@ -457,7 +457,7 @@ func TestV2ListPropertyOptions(t *testing.T) {
 		// given
 		fx := newV2Fixture(t)
 		addOptions(fx, t)
-		want := []v2model.OptionRow{{Name: "High", Color: "red"}, {Name: "Low"}}
+		want := []v2model.OptionRow{{Id: "opt-high", Name: "High", Color: "red"}, {Id: "opt-low", Name: "Low"}}
 
 		// when
 		rows, total, hasMore, err := fx.ListPropertyOptions(context.Background(), testSpaceId, "priority", "", 0, 25)

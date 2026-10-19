@@ -352,9 +352,11 @@ type PropertyRow struct {
 	Format string `json:"format"`
 }
 
-// OptionRow is a select/multiSelect option list row: names are the
-// option vocabulary (C2), color optional.
+// OptionRow is a select/multiSelect option list row: the name is the option
+// vocabulary (C2), the id is the unambiguous handle the option order and
+// removal routes take, color optional.
 type OptionRow struct {
+	Id    string `json:"id"`
 	Name  string `json:"name"`
 	Color string `json:"color,omitempty"`
 }

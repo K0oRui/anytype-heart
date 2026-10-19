@@ -17,7 +17,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"sort"
 
 	v2model "github.com/anyproto/anytype-heart/core/api/v2/model"
 	"github.com/anyproto/anytype-heart/core/domain"
@@ -289,11 +288,6 @@ func (s *Service) guardDeclaredOptionsAt(spaceId string, defs []anyblockjson.Typ
 // detachedProperties names the properties a replaced property_definitions list
 // dropped: present in the type's recommended lists before the write, absent
 // after.
-//
-// Reported as rows rather than ids because an id is not an address on this
-// surface — a caller who sent `location` cannot match a bson id back to the
-// field they wrote by hand. An id that no longer resolves to a live property
-// is skipped rather than guessed at.
 func (s *Service) detachedProperties(spaceId string, before, kept map[string]bool) []v2model.PropertyRow {
 	var gone []string
 	for id := range before {
@@ -304,28 +298,5 @@ func (s *Service) detachedProperties(spaceId string, before, kept map[string]boo
 	if len(gone) == 0 {
 		return nil
 	}
-	entries, err := s.liveProperties(spaceId)
-	if err != nil {
-		return nil
-	}
-	byId := make(map[string]propertyEntry, len(entries))
-	for _, entry := range entries {
-		byId[entry.Id] = entry
-	}
-	keyTaken, slugHolders := servedPropertyKeySets(entries)
-
-	rows := make([]v2model.PropertyRow, 0, len(gone))
-	for _, id := range gone {
-		entry, ok := byId[id]
-		if !ok {
-			continue
-		}
-		rows = append(rows, v2model.PropertyRow{
-			Key:    servedKey(entry.Key, entry.Slug, keyTaken, slugHolders),
-			Name:   entry.Name,
-			Format: anyblockjson.FormatName(entry.Format),
-		})
-	}
-	sort.Slice(rows, func(i, j int) bool { return rows[i].Key < rows[j].Key })
-	return rows
+	return s.propertyRowsByIds(spaceId, gone)
 }
