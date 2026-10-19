@@ -559,7 +559,7 @@ func SchemaKindHandler(s *v2service.Service) gin.HandlerFunc {
 //	@Id				get_op_schema
 //	@Tags			Schemas
 //	@Produce		json
-//	@Param			op	path		string				true	"Op name: set_properties, set_type, update_block, replace_subtree, insert_blocks, move_block, delete_block, replace_text, set_cell, update_view, insert_view, move_view, delete_view, add_items, remove_items"
+//	@Param			op	path		string				true	"Op name: set_properties, set_type, update_block, replace_subtree, insert_blocks, move_block, delete_block, duplicate_block, replace_text, set_cell, insert_table_row, delete_table_row, duplicate_table_row, set_table_row_header, insert_table_column, delete_table_column, duplicate_table_column, move_table_column, update_view, insert_view, move_view, delete_view, add_items, remove_items"
 //	@Success		200	{object}	v2model.SchemaEntry	"Schema + example"
 //	@Failure		404	{object}	v2model.Error		"Unknown op"
 //	@Security		bearerauth

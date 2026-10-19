@@ -78,6 +78,10 @@ func (b *block) Duplicate(s *state.State) (newID string, visitedIds []string, bl
 	for i, rowID := range rows.ChildrenIds {
 		visitedIds = append(visitedIds, rowID)
 		row := s.Pick(rowID)
+		if row == nil {
+			err = fmt.Errorf("row %s is not found", rowID)
+			return
+		}
 		row = row.Copy()
 		row.Model().Id = genID()
 		blocks = append(blocks, row)
@@ -96,6 +100,10 @@ func (b *block) Duplicate(s *state.State) (newID string, visitedIds []string, bl
 			}
 			visitedIds = append(visitedIds, cellID)
 			cell := s.Pick(cellID)
+			if cell == nil {
+				err = fmt.Errorf("cell %s is not found", cellID)
+				return
+			}
 			cell = cell.Copy()
 			cell.Model().Id = MakeCellID(row.Model().Id, newColID)
 			blocks = append(blocks, cell)

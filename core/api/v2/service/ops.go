@@ -26,7 +26,10 @@ import (
 // v2OpNames is the closed op set, in documentation order.
 var v2OpNames = []string{
 	"set_properties", "set_type", "update_block", "replace_subtree",
-	"insert_blocks", "move_block", "delete_block", "replace_text", "set_cell",
+	"insert_blocks", "move_block", "delete_block", "duplicate_block",
+	"replace_text", "set_cell",
+	"insert_table_row", "delete_table_row", "duplicate_table_row", "set_table_row_header",
+	"insert_table_column", "delete_table_column", "duplicate_table_column", "move_table_column",
 	"update_view", "insert_view", "move_view", "delete_view",
 	"add_items", "remove_items",
 }
@@ -69,14 +72,28 @@ var v2OpEditNeeds = map[string]apicore.EditNeeds{
 	"insert_blocks":   {Blocks: true},
 	"move_block":      {Blocks: true},
 	"delete_block":    {Blocks: true},
+	"duplicate_block": {Blocks: true},
 	"replace_text":    {Blocks: true},
 	"set_cell":        {Blocks: true},
-	"update_view":     {},
-	"insert_view":     {},
-	"move_view":       {},
-	"delete_view":     {},
-	"add_items":       {},
-	"remove_items":    {},
+	// The table row and column ops edit the table structure itself, so they
+	// take the same axis every other document edit does. Their cells live in
+	// the same block tree (a table is one block with format-internal
+	// children, SPEC §6.1); table.createBlock checks Restrictions_Blocks like
+	// any other containment edit.
+	"insert_table_row":       {Blocks: true},
+	"delete_table_row":       {Blocks: true},
+	"duplicate_table_row":    {Blocks: true},
+	"set_table_row_header":   {Blocks: true},
+	"insert_table_column":    {Blocks: true},
+	"delete_table_column":    {Blocks: true},
+	"duplicate_table_column": {Blocks: true},
+	"move_table_column":      {Blocks: true},
+	"update_view":            {},
+	"insert_view":            {},
+	"move_view":              {},
+	"delete_view":            {},
+	"add_items":              {},
+	"remove_items":           {},
 }
 
 // editNeedsForOps unions the restriction axes a batch touches and refuses the
@@ -170,20 +187,28 @@ var v2OpRebuildsView = map[string]bool{
 	"insert_blocks":   true,
 	"move_block":      true,
 	"delete_block":    true,
+	"duplicate_block": true,
 	// replace_text maintains the view in place (stateops.go textEdited): it
 	// changes exactly one exported field of one block, and it writes the
 	// canonical rendering a re-marshal would emit. It is also the one op that
 	// inherently arrives many-per-batch (one find/replace each), so exempting
 	// it is what lets an agent batch hundreds of text edits on a large
 	// document without tripping the render-work bound.
-	"replace_text": false,
-	"set_cell":     true,
-	"update_view":  true,
-	"insert_view":  true,
-	"move_view":    true,
-	"delete_view":  true,
-	"add_items":    true,
-	"remove_items": true,
+	"replace_text": false, "set_cell": true,
+	"insert_table_row":       true,
+	"delete_table_row":       true,
+	"duplicate_table_row":    true,
+	"set_table_row_header":   true,
+	"insert_table_column":    true,
+	"delete_table_column":    true,
+	"duplicate_table_column": true,
+	"move_table_column":      true,
+	"update_view":            true,
+	"insert_view":            true,
+	"move_view":              true,
+	"delete_view":            true,
+	"add_items":              true,
+	"remove_items":           true,
 }
 
 // v2OutputOnlyPropertyKeys reports whether a key is one of the SPEC §4a
@@ -383,6 +408,19 @@ type opMoveBlock struct {
 	Position string `json:"position"`
 }
 
+// opDuplicateBlock copies one block's subtree and lands the copy at the
+// shared targeting vocabulary's place (R14). Unlike move_block there is no
+// cycle to refuse: the copy is a new block, so any target, the source itself
+// included, is a coherent place for it.
+type opDuplicateBlock struct {
+	Op       string `json:"op"`
+	Id       string `json:"id"`
+	After    string `json:"after"`
+	Before   string `json:"before"`
+	Inside   string `json:"inside"`
+	Position string `json:"position"`
+}
+
 // opDeleteBlock addresses its block the same two ways as opUpdateBlock. This
 // is the op §5.1 calls out as the one where one-match-or-refuse is
 // load-bearing: a locator that guessed here would delete the wrong subtree.
@@ -407,6 +445,73 @@ type opSetCell struct {
 	Row     string          `json:"row"`
 	Col     string          `json:"col"`
 	Value   json.RawMessage `json:"value"`
+}
+
+// The table row and column ops speak the same addressing set_cell does: the
+// table block by ref (table_id), and the part they act on by id or by the
+// label a read shows (row / col). The ops that PLACE a part take the shared
+// after/before/position vocabulary, scoped to the axis: `after` names the
+// row (or column) the new one follows, not a document block.
+type opInsertTableRow struct {
+	Op       string `json:"op"`
+	TableId  string `json:"table_id"`
+	After    string `json:"after"`
+	Before   string `json:"before"`
+	Position string `json:"position"`
+}
+
+type opDeleteTableRow struct {
+	Op      string `json:"op"`
+	TableId string `json:"table_id"`
+	Row     string `json:"row"`
+}
+
+type opDuplicateTableRow struct {
+	Op       string `json:"op"`
+	TableId  string `json:"table_id"`
+	Row      string `json:"row"`
+	After    string `json:"after"`
+	Before   string `json:"before"`
+	Position string `json:"position"`
+}
+
+type opSetTableRowHeader struct {
+	Op       string `json:"op"`
+	TableId  string `json:"table_id"`
+	Row      string `json:"row"`
+	IsHeader bool   `json:"is_header"`
+}
+
+type opInsertTableColumn struct {
+	Op       string `json:"op"`
+	TableId  string `json:"table_id"`
+	After    string `json:"after"`
+	Before   string `json:"before"`
+	Position string `json:"position"`
+}
+
+type opDeleteTableColumn struct {
+	Op      string `json:"op"`
+	TableId string `json:"table_id"`
+	Col     string `json:"col"`
+}
+
+type opDuplicateTableColumn struct {
+	Op       string `json:"op"`
+	TableId  string `json:"table_id"`
+	Col      string `json:"col"`
+	After    string `json:"after"`
+	Before   string `json:"before"`
+	Position string `json:"position"`
+}
+
+type opMoveTableColumn struct {
+	Op       string `json:"op"`
+	TableId  string `json:"table_id"`
+	Col      string `json:"col"`
+	After    string `json:"after"`
+	Before   string `json:"before"`
+	Position string `json:"position"`
 }
 
 type opUpdateView struct {

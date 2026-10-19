@@ -589,6 +589,6 @@ func TestOpEnvelopesAreLookups(t *testing.T) {
 				channels[c]++
 			}
 		}
-		assert.Equal(t, map[string]int{v2service.OpChannelObject: 15, v2service.OpChannelType: 7}, channels)
+		assert.Equal(t, map[string]int{v2service.OpChannelObject: 24, v2service.OpChannelType: 7}, channels)
 	}
 }

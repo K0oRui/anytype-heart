@@ -233,24 +233,33 @@ func opEnvelopeProse(op string) string {
 // about set_cell). Its own table, because the op table's entries are built
 // by opSchema, which reads this.
 var v2OpAbout = map[string]string{
-	"set_properties":  "Sets, adds to, removes from or unsets property values on the object",
-	"set_type":        "Changes the object's type and converts the document to the new type's layout",
-	"update_block":    "Changes fields of one existing block, found by id or by its text",
-	"replace_subtree": "Replaces one block and its descendants with new blocks",
-	"insert_blocks":   "Inserts new blocks or markdown after, before or inside a block, or at either end of the document",
-	"move_block":      "Moves a block and its subtree to a new place",
-	"delete_block":    "Deletes a childless block found by id or by its text, or its whole subtree with recursive set to true",
-	"replace_text":    "Replaces text inside one block, markup preserved",
-	"set_cell":        "Sets one table cell, by row and column",
-	"update_view":     "Changes a view's fields or columns on the object's dataview",
-	"insert_view":     "Adds a view to the object's dataview, with defaults or copied from another",
-	"move_view":       "Reorders a view among the dataview's views",
-	"delete_view":     "Deletes a view from the dataview; the last one is refused",
-	"add_property":    "Adds one property to the type's field list; an unknown name creates it, with the given format",
-	"remove_property": "Takes one property off the type's field list; the property and its values stay in the space",
-	"move_property":   "Reorders one property within its section of the type",
-	"add_items":       "Adds objects to the collection, by id",
-	"remove_items":    "Removes objects from the collection, by id",
+	"set_properties":         "Sets, adds to, removes from or unsets property values on the object",
+	"set_type":               "Changes the object's type and converts the document to the new type's layout",
+	"update_block":           "Changes fields of one existing block, found by id or by its text",
+	"replace_subtree":        "Replaces one block and its descendants with new blocks",
+	"insert_blocks":          "Inserts new blocks or markdown after, before or inside a block, or at either end of the document",
+	"move_block":             "Moves a block and its subtree to a new place",
+	"delete_block":           "Deletes a childless block found by id or by its text, or its whole subtree with recursive set to true",
+	"duplicate_block":        "Copies a block and its whole subtree, with new ids, to a new place",
+	"replace_text":           "Replaces text inside one block, markup preserved",
+	"set_cell":               "Sets one table cell, by row and column",
+	"insert_table_row":       "Adds a row to a table, at an end or beside another row, with an empty cell for every column",
+	"delete_table_row":       "Deletes one table row and its cells",
+	"duplicate_table_row":    "Copies a table row and its cells",
+	"set_table_row_header":   "Sets or clears one table row's header flag",
+	"insert_table_column":    "Adds a column to a table, at an end or beside another column, with an empty cell for every row",
+	"delete_table_column":    "Deletes one table column and its cells",
+	"duplicate_table_column": "Copies a table column and its cells",
+	"move_table_column":      "Moves a table column to a new place among the columns",
+	"update_view":            "Changes a view's fields or columns on the object's dataview",
+	"insert_view":            "Adds a view to the object's dataview, with defaults or copied from another",
+	"move_view":              "Reorders a view among the dataview's views",
+	"delete_view":            "Deletes a view from the dataview; the last one is refused",
+	"add_property":           "Adds one property to the type's field list; an unknown name creates it, with the given format",
+	"remove_property":        "Takes one property off the type's field list; the property and its values stay in the space",
+	"move_property":          "Reorders one property within its section of the type",
+	"add_items":              "Adds objects to the collection, by id",
+	"remove_items":           "Removes objects from the collection, by id",
 }
 
 // opSchema builds one op's strict schema: its own sentence first, then the
@@ -409,6 +418,29 @@ const v2TypePositionPropDef = `"position":{"type":"string","enum":["first","last
 // calendar arithmetic itself and gets the year wrong without a refusal.
 const apiV2PropertyValues = `A list-shaped key takes an array of option names or object ids; a date takes a date string such as 2026-08-01 or 2026-08-01T09:30:00Z rather than unix seconds`
 
+// v2TableIdPropDef is the table block the table ops address, in the same
+// spelling set_cell uses so one table op's schema teaches the others.
+const v2TableIdPropDef = `"table_id":{"$ref":"#/$defs/blockRef","description":"a table block"}`
+
+// v2TableRowRefDef and v2TableColRefDef are how a table op names the one row
+// or column it acts on: the id-or-label contract set_cell's row and col slots
+// follow, repeated here because these ops name a part at the top level.
+const v2TableRowRefDef = `"row":{"type":"string","minLength":1,"maxLength":64,"description":"row id (full or unique suffix), or the row's first-cell text; case-insensitive, must name exactly one row"}`
+
+const v2TableColRefDef = `"col":{"type":"string","minLength":1,"maxLength":64,"description":"column id (full or unique suffix), or the column's header text (served as header on each column in the read); case-insensitive, must name exactly one column"}`
+
+// v2TableRowPlacedDefs are the placement members of the row ops that put a row
+// somewhere: after and before name a sibling ROW (not a document block),
+// position names one end of the rows.
+const v2TableRowPlacedDefs = `"after":{"type":"string","minLength":1,"maxLength":64,"description":"place it after this row (id, unique suffix, or the row's first-cell text)"},` +
+	`"before":{"type":"string","minLength":1,"maxLength":64,"description":"place it before this row"},` +
+	`"position":{"type":"string","enum":["first","last"],"description":"at most one of after, before and position; omitted appends to the rows. first goes before the first row; a header row always stays first."}`
+
+// v2TableColPlacedDefs are the same three members scoped to the columns.
+const v2TableColPlacedDefs = `"after":{"type":"string","minLength":1,"maxLength":64,"description":"place it after this column (id, unique suffix, or the column's header text)"},` +
+	`"before":{"type":"string","minLength":1,"maxLength":64,"description":"place it before this column"},` +
+	`"position":{"type":"string","enum":["first","last"],"description":"at most one of after, before and position; omitted appends to the columns."}`
+
 // v2OpSchemas maps each PATCH op to its strict schema + single-op example.
 var v2OpSchemas = map[string]v2SchemaKind{
 	"set_properties": {
@@ -470,6 +502,16 @@ var v2OpSchemas = map[string]v2SchemaKind{
 			`"recursive":{"type":"boolean","description":"default false — deleting a block that has descendants without it is an error naming the descendant count and the resolved block id"}`),
 		example: `{"op":"delete_block","match":"Obsolete section","recursive":true}`,
 	},
+	"duplicate_block": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("duplicate_block", []string{"id"},
+			`"id":{"$ref":"#/$defs/blockRef","description":"the block to copy; its whole subtree comes with it, with fresh ids. Omit after/before/inside to put the copy at the end of the document (position:first for the start)"}`,
+			`"after":{"$ref":"#/$defs/blockRef","description":"put the copy after this block's subtree, at its level"}`,
+			`"before":{"$ref":"#/$defs/blockRef","description":"put the copy before this block, at its level"}`,
+			`"inside":{"$ref":"#/$defs/blockRef","description":"put the copy as children of this block; unlike move_block the source itself may be named, since the copy is a new block"}`,
+			`"position":{"type":"string","enum":["first","last"],"description":"which end of the inside container, or of the document itself when no targeting field is given"}`),
+		example: `{"op":"duplicate_block","id":"tbl01","after":"para2"}`,
+	},
 	"replace_text": {
 		endpoint: v2OpsEndpoint,
 		schema: opSchema("replace_text", []string{"find", "replace"},
@@ -487,6 +529,64 @@ var v2OpSchemas = map[string]v2SchemaKind{
 			`"col":{"type":"string","minLength":1,"maxLength":64,"description":"column id (full or unique suffix), or the column's header text (served as header on each column in the read) — case-insensitive, must name exactly one column"}`,
 			`"value":{"type":["string","null","object","array"],"description":"string = paragraph shorthand, null = clear, or a block object / array of blocks"}`),
 		example: `{"op":"set_cell","table_id":"t1","row":"r2","col":"c1","value":"done"}`,
+	},
+	"insert_table_row": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("insert_table_row", []string{"table_id"},
+			v2TableIdPropDef, v2TableRowPlacedDefs),
+		example: `{"op":"insert_table_row","table_id":"t1","position":"last"}`,
+	},
+	"delete_table_row": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("delete_table_row", []string{"table_id", "row"},
+			v2TableIdPropDef, v2TableRowRefDef),
+		example: `{"op":"delete_table_row","table_id":"t1","row":"Q3 plan"}`,
+	},
+	"duplicate_table_row": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("duplicate_table_row", []string{"table_id", "row"},
+			v2TableIdPropDef, v2TableRowRefDef,
+			`"after":{"type":"string","minLength":1,"maxLength":64,"description":"put the copy after this row"}`,
+			`"before":{"type":"string","minLength":1,"maxLength":64,"description":"put the copy before this row"}`,
+			`"position":{"type":"string","enum":["first","last"],"description":"at most one of after, before and position; omitted puts the copy right after the row it copies"}`),
+		example: `{"op":"duplicate_table_row","table_id":"t1","row":"r2"}`,
+	},
+	"set_table_row_header": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("set_table_row_header", []string{"table_id", "row", "is_header"},
+			v2TableIdPropDef, v2TableRowRefDef,
+			`"is_header":{"type":"boolean","description":"true makes this the table's header row (it sorts first, and reads label each column by its cell); false clears it"}`),
+		example: `{"op":"set_table_row_header","table_id":"t1","row":"r1","is_header":true}`,
+	},
+	"insert_table_column": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("insert_table_column", []string{"table_id"},
+			v2TableIdPropDef, v2TableColPlacedDefs),
+		example: `{"op":"insert_table_column","table_id":"t1","after":"c1"}`,
+	},
+	"delete_table_column": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("delete_table_column", []string{"table_id", "col"},
+			v2TableIdPropDef, v2TableColRefDef),
+		example: `{"op":"delete_table_column","table_id":"t1","col":"Notes"}`,
+	},
+	"duplicate_table_column": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("duplicate_table_column", []string{"table_id", "col"},
+			v2TableIdPropDef, v2TableColRefDef,
+			`"after":{"type":"string","minLength":1,"maxLength":64,"description":"put the copy after this column"}`,
+			`"before":{"type":"string","minLength":1,"maxLength":64,"description":"put the copy before this column"}`,
+			`"position":{"type":"string","enum":["first","last"],"description":"at most one of after, before and position; omitted puts the copy right after the column it copies"}`),
+		example: `{"op":"duplicate_table_column","table_id":"t1","col":"c2"}`,
+	},
+	"move_table_column": {
+		endpoint: v2OpsEndpoint,
+		schema: opSchema("move_table_column", []string{"table_id", "col"},
+			v2TableIdPropDef, v2TableColRefDef,
+			`"after":{"type":"string","minLength":1,"maxLength":64,"description":"move it after this column"}`,
+			`"before":{"type":"string","minLength":1,"maxLength":64,"description":"move it before this column"}`,
+			`"position":{"type":"string","enum":["first","last"],"description":"give exactly one of after, before and position: a destination is required. first makes it the leading column."}`),
+		example: `{"op":"move_table_column","table_id":"t1","col":"c3","position":"first"}`,
 	},
 	"update_view": {
 		endpoint: v2ViewOpsEndpoints,

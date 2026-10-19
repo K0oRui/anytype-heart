@@ -664,6 +664,12 @@ func (a *v2StateApplier) applyAt(raw json.RawMessage, opPath string) error {
 			return err
 		}
 		return a.applyDeleteBlock(op, opPath)
+	case "duplicate_block":
+		var op opDuplicateBlock
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyDuplicateBlock(op, opPath)
 	case "replace_text":
 		var op opReplaceText
 		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
@@ -676,6 +682,54 @@ func (a *v2StateApplier) applyAt(raw json.RawMessage, opPath string) error {
 			return err
 		}
 		return a.applySetCell(op, opPath)
+	case "insert_table_row":
+		var op opInsertTableRow
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyInsertTableRow(op, opPath)
+	case "delete_table_row":
+		var op opDeleteTableRow
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyDeleteTableRow(op, opPath)
+	case "duplicate_table_row":
+		var op opDuplicateTableRow
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyDuplicateTableRow(op, opPath)
+	case "set_table_row_header":
+		var op opSetTableRowHeader
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applySetTableRowHeader(op, opPath)
+	case "insert_table_column":
+		var op opInsertTableColumn
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyInsertTableColumn(op, opPath)
+	case "delete_table_column":
+		var op opDeleteTableColumn
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyDeleteTableColumn(op, opPath)
+	case "duplicate_table_column":
+		var op opDuplicateTableColumn
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyDuplicateTableColumn(op, opPath)
+	case "move_table_column":
+		var op opMoveTableColumn
+		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
+			return err
+		}
+		return a.applyMoveTableColumn(op, opPath)
 	case "update_view":
 		var op opUpdateView
 		if err := decodeStrictOp(raw, probe.Op, opPath, &op); err != nil {
@@ -1863,7 +1917,9 @@ func opCanChangeFileContainment(raw json.RawMessage) bool {
 		return false // apply already returned the path-addressed decode error
 	}
 	switch probe.Op {
-	case "update_block", "replace_subtree", "insert_blocks", "move_block", "set_cell":
+	case "update_block", "replace_subtree", "insert_blocks", "move_block", "set_cell",
+		"duplicate_block", "insert_table_row", "duplicate_table_row",
+		"insert_table_column", "duplicate_table_column":
 		return true
 	default:
 		return false
@@ -2129,6 +2185,100 @@ func (a *v2StateApplier) applyDeleteBlock(op opDeleteBlock, opPath string) error
 	a.st.Unlink(blockId(doc.blocks[idx])) // the unlinked subtree is dropped by apply-side normalization
 	a.mutated()
 	return nil
+}
+
+// applyDuplicateBlock copies the addressed block's subtree and splices the
+// copy at the op's target. The copy is built from the SERVED document, so it
+// round-trips exactly what a read shows, and every doc-local id the run
+// carries (block, table row/column, dataview view, cell descendants) is
+// stripped first: the importer mints fresh ones, so the copy shares no
+// identity with its source.
+//
+// Both limits a block run has apply here as they do on a payload run: the
+// per-op block cap (the copy is authored at the same cost as an insert) and
+// the file-descendant net (edit.go runs it for this op like any other
+// containment change).
+func (a *v2StateApplier) applyDuplicateBlock(op opDuplicateBlock, opPath string) error {
+	doc, err := a.doc()
+	if err != nil {
+		return err
+	}
+	idx, err := a.resolveRef(doc, op.Id, opPath+".id")
+	if err != nil {
+		return err
+	}
+	end := doc.subtreeEnd(idx)
+	if count := end - idx; count > v2MaxBlocksPerOp {
+		return v2model.ValidationFailed("the block's subtree is too large to duplicate",
+			v2model.Issue{
+				Path:    opPath + ".id",
+				Message: fmt.Sprintf("the subtree holds %d blocks, above the %d-block per-op limit", count, v2MaxBlocksPerOp),
+				Hint:    "duplicate a smaller part of it, or author the copy through insert_blocks",
+			})
+	}
+	anchor, mode, pos, err := a.resolveTarget(doc, op.After, op.Before, op.Inside, op.Position, opPath)
+	if err != nil {
+		return err
+	}
+	run, err := a.cloneSubtreeRun(doc, idx, end)
+	if err != nil {
+		return err
+	}
+	blocks, topIds, err := a.fragmentBlocks(opPath+".id", run)
+	if err != nil {
+		return err
+	}
+	// every id here is server-minted, so this cannot report a collision; it
+	// keeps the batch-wide id bookkeeping (claimedIds) a later op's payload
+	// resolves against
+	if err := a.claimPayloadIds(blocks, nil, runPathFor(opPath, "id", topIds)); err != nil {
+		return err
+	}
+	a.setBlocks(blocks)
+	anchorId, insertPos := "", targetPosition(mode, pos)
+	if mode == "root" {
+		anchorId, insertPos = rootTarget(doc, pos, -1, -1)
+	} else {
+		anchorId = blockId(doc.blocks[anchor])
+	}
+	if err := a.st.InsertTo(anchorId, insertPos, topIds...); err != nil {
+		return fmt.Errorf("insert duplicated blocks at %q: %w", anchorId, err)
+	}
+	a.mutated()
+	return nil
+}
+
+// cloneSubtreeRun renders one contiguous subtree run of the document view as
+// an id-less payload run: a deep copy, rebased so the first block is at
+// relative 0, with every doc-local id slot removed. The id walk is the same
+// one the payload resolver uses (payloadids.go), so the copy cannot keep an
+// identity in a slot that walker covers.
+func (a *v2StateApplier) cloneSubtreeRun(doc *v2EditDoc, from, to int) ([]map[string]any, error) {
+	base := blockIndent(doc.blocks[from])
+	run := make([]map[string]any, 0, to-from)
+	for i := from; i < to; i++ {
+		raw, err := json.Marshal(doc.blocks[i])
+		if err != nil {
+			return nil, fmt.Errorf("copy block %q: %w", blockId(doc.blocks[i]), err)
+		}
+		var clone map[string]any
+		if err := decodeJSONUseNumber(raw, &clone); err != nil {
+			return nil, fmt.Errorf("copy block %q: %w", blockId(doc.blocks[i]), err)
+		}
+		if err := walkPayloadIdSlots(clone, fmt.Sprintf("blocks[%d]", i), func(slot payloadIdSlot) error {
+			delete(slot.m, "id")
+			return nil
+		}); err != nil {
+			return nil, err
+		}
+		rel := blockIndent(doc.blocks[i]) - base
+		delete(clone, "indent")
+		if rel > 0 {
+			clone["indent"] = float64(rel)
+		}
+		run = append(run, clone)
+	}
+	return run, nil
 }
 
 func (a *v2StateApplier) applyReplaceText(op opReplaceText, opPath string) error {
