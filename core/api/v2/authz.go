@@ -169,6 +169,37 @@ var v2RouteAuthz = map[string]RouteAuthz{
 	routeKey(http.MethodPost, "/v2/spaces/:space_id/chats/:chat_id/read"):                           {Verb: RouteVerbWrite},
 	routeKey(http.MethodPost, "/v2/spaces/:space_id/chats/:chat_id/status"):                         {Verb: RouteVerbWrite},
 	routeKey(http.MethodPost, "/v2/spaces/:space_id/objects/:object_id/discussion"):                 {Verb: RouteVerbWrite},
+	// space administration surface (registerSpaceAdminRoutes)
+	//
+	// The invite link routes carry their credential (cid + file key) IN the
+	// request and address a space the caller has not been granted yet, so a
+	// narrowed key using them would step outside the boundary the user drew:
+	// scoped-denied, like POST /v2/spaces.
+	//
+	// GET /v2/workspace and the selection route are service-filtered: the
+	// service intersects the account's selected space with the grant rather
+	// than echoing an id the key cannot reach. The order routes touch only
+	// account preference (no space data), and the object-list route acts on
+	// the selected space, which the service checks.
+	routeKey(http.MethodGet, "/v2/spaces/:space_id/invite"):       {Verb: RouteVerbRead},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/invite"):      {Verb: RouteVerbWrite},
+	routeKey(http.MethodPatch, "/v2/spaces/:space_id/invite"):     {Verb: RouteVerbWrite},
+	routeKey(http.MethodDelete, "/v2/spaces/:space_id/invite"):    {Verb: RouteVerbWrite},
+	routeKey(http.MethodGet, "/v2/spaces/:space_id/invite/guest"): {Verb: RouteVerbRead},
+	routeKey(http.MethodGet, "/v2/invites/:invite_cid"):           {Verb: RouteVerbRead, Global: GlobalScopedDenied},
+	routeKey(http.MethodPost, "/v2/invites/:invite_cid/join"):     {Verb: RouteVerbWrite, Global: GlobalScopedDenied},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/members"):         {Verb: RouteVerbWrite},
+	routeKey(http.MethodPatch, "/v2/spaces/:space_id/members"):        {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/members/remove"):  {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/members/approve"): {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/members/decline"): {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/leave/approve"):   {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/join/cancel"):     {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/sharing"):         {Verb: RouteVerbWrite},
+	routeKey(http.MethodDelete, "/v2/spaces/:space_id/sharing"):       {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/ownership"):       {Verb: RouteVerbWrite},
+	routeKey(http.MethodDelete, "/v2/spaces/:space_id"):               {Verb: RouteVerbWrite},
+	routeKey(http.MethodPut, "/v2/spaces/:space_id/homepage"):         {Verb: RouteVerbWrite},
 	// pairing, registered outside the authenticated group by server.registerAuthRoutes
 	routeKey(http.MethodPost, "/v2/auth/challenges"): {Verb: RouteVerbWrite, Global: GlobalAuthExempt},
 	routeKey(http.MethodPost, "/v2/auth/api_keys"):   {Verb: RouteVerbWrite, Global: GlobalAuthExempt},

@@ -113,6 +113,7 @@ DRY_RUN_CREATES = {
     "add_chat_message",
     "create_chat",
     "create_collection",
+    "create_invite",
     "create_object",
     "create_property",
     "create_query",
@@ -151,6 +152,22 @@ IDEMPOTENT_OPERATIONS = {
     "update_widget",
     "delete_widget",
     "create_discussion",
+    "create_invite",
+    "update_invite",
+    "revoke_invite",
+    "join_space",
+    "add_members",
+    "update_member_permissions",
+    "remove_members",
+    "approve_member",
+    "decline_member",
+    "approve_leave",
+    "cancel_join",
+    "share_space",
+    "stop_sharing_space",
+    "change_space_ownership",
+    "delete_space",
+    "set_space_homepage",
 }
 
 WRITE_LIMITED_OPERATIONS = IDEMPOTENT_OPERATIONS - {"validate"}
@@ -175,6 +192,17 @@ REQUEST_BODY_LIMITED_OPERATIONS = {
     "upload_file",
     "create_widget",
     "update_widget",
+    "create_invite",
+    "update_invite",
+    "join_space",
+    "add_members",
+    "update_member_permissions",
+    "remove_members",
+    "approve_member",
+    "decline_member",
+    "approve_leave",
+    "change_space_ownership",
+    "set_space_homepage",
 }
 
 

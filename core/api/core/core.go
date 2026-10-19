@@ -226,10 +226,25 @@ type ClientCommands interface {
 	WorkspaceCreate(context.Context, *pb.RpcWorkspaceCreateRequest) *pb.RpcWorkspaceCreateResponse
 	WorkspaceOpen(context.Context, *pb.RpcWorkspaceOpenRequest) *pb.RpcWorkspaceOpenResponse
 	WorkspaceSetInfo(context.Context, *pb.RpcWorkspaceSetInfoRequest) *pb.RpcWorkspaceSetInfoResponse
+	WorkspaceSetHomepage(context.Context, *pb.RpcWorkspaceSetHomepageRequest) *pb.RpcWorkspaceSetHomepageResponse
 	SpaceRequestApprove(context.Context, *pb.RpcSpaceRequestApproveRequest) *pb.RpcSpaceRequestApproveResponse
 	SpaceRequestDecline(context.Context, *pb.RpcSpaceRequestDeclineRequest) *pb.RpcSpaceRequestDeclineResponse
 	SpaceParticipantRemove(context.Context, *pb.RpcSpaceParticipantRemoveRequest) *pb.RpcSpaceParticipantRemoveResponse
 	SpaceParticipantPermissionsChange(context.Context, *pb.RpcSpaceParticipantPermissionsChangeRequest) *pb.RpcSpaceParticipantPermissionsChangeResponse
+	SpaceParticipantsAddList(context.Context, *pb.RpcSpaceParticipantsAddListRequest) *pb.RpcSpaceParticipantsAddListResponse
+	SpaceLeaveApprove(context.Context, *pb.RpcSpaceLeaveApproveRequest) *pb.RpcSpaceLeaveApproveResponse
+	SpaceMakeShareable(context.Context, *pb.RpcSpaceMakeShareableRequest) *pb.RpcSpaceMakeShareableResponse
+	SpaceStopSharing(context.Context, *pb.RpcSpaceStopSharingRequest) *pb.RpcSpaceStopSharingResponse
+	SpaceChangeOwnership(context.Context, *pb.RpcSpaceChangeOwnershipRequest) *pb.RpcSpaceChangeOwnershipResponse
+	SpaceDelete(context.Context, *pb.RpcSpaceDeleteRequest) *pb.RpcSpaceDeleteResponse
+	SpaceInviteGetCurrent(context.Context, *pb.RpcSpaceInviteGetCurrentRequest) *pb.RpcSpaceInviteGetCurrentResponse
+	SpaceInviteGenerate(context.Context, *pb.RpcSpaceInviteGenerateRequest) *pb.RpcSpaceInviteGenerateResponse
+	SpaceInviteChange(context.Context, *pb.RpcSpaceInviteChangeRequest) *pb.RpcSpaceInviteChangeResponse
+	SpaceInviteRevoke(context.Context, *pb.RpcSpaceInviteRevokeRequest) *pb.RpcSpaceInviteRevokeResponse
+	SpaceInviteGetGuest(context.Context, *pb.RpcSpaceInviteGetGuestRequest) *pb.RpcSpaceInviteGetGuestResponse
+	SpaceInviteView(context.Context, *pb.RpcSpaceInviteViewRequest) *pb.RpcSpaceInviteViewResponse
+	SpaceJoin(context.Context, *pb.RpcSpaceJoinRequest) *pb.RpcSpaceJoinResponse
+	SpaceJoinCancel(context.Context, *pb.RpcSpaceJoinCancelRequest) *pb.RpcSpaceJoinCancelResponse
 
 	// Object
 	ObjectShow(context.Context, *pb.RpcObjectShowRequest) *pb.RpcObjectShowResponse

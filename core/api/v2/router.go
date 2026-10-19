@@ -451,6 +451,122 @@ func registerCreateRoutes(v2 *gin.RouterGroup, deps RouteDeps, idempotencyMW gin
 		deps.AnalyticsEvent("V2UploadFile"),
 		v2handler.UploadFileHandler(deps.Service),
 	)
+	registerSpaceAdminRoutes(v2, deps, idempotencyMW)
+}
+
+// registerSpaceAdminRoutes registers the space administration surface:
+// invites, membership, sharing, ownership, and the account-level ordering
+// routes. Every mutation carries the C8 idempotency middleware and the write
+// limiter; the reads and the two invite-link routes are plain.
+func registerSpaceAdminRoutes(v2 *gin.RouterGroup, deps RouteDeps, idempotencyMW gin.HandlerFunc) {
+	v2.GET("/spaces/:space_id/invite",
+		deps.AnalyticsEvent("V2GetInvite"),
+		v2handler.GetInviteHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/invite",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2CreateInvite"),
+		v2handler.CreateInviteHandler(deps.Service),
+	)
+	v2.PATCH("/spaces/:space_id/invite",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2UpdateInvite"),
+		v2handler.UpdateInviteHandler(deps.Service),
+	)
+	v2.DELETE("/spaces/:space_id/invite",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2RevokeInvite"),
+		v2handler.RevokeInviteHandler(deps.Service),
+	)
+	v2.GET("/spaces/:space_id/invite/guest",
+		deps.AnalyticsEvent("V2GetGuestInvite"),
+		v2handler.GetGuestInviteHandler(deps.Service),
+	)
+	v2.GET("/invites/:invite_cid",
+		deps.AnalyticsEvent("V2ViewInvite"),
+		v2handler.ViewInviteHandler(deps.Service),
+	)
+	v2.POST("/invites/:invite_cid/join",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2JoinSpace"),
+		v2handler.JoinSpaceHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/members",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2AddMembers"),
+		v2handler.AddMembersHandler(deps.Service),
+	)
+	v2.PATCH("/spaces/:space_id/members",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2UpdateMemberPermissions"),
+		v2handler.UpdateMemberPermissionsHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/members/remove",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2RemoveMembers"),
+		v2handler.RemoveMembersHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/members/approve",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2ApproveMember"),
+		v2handler.ApproveMemberHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/members/decline",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2DeclineMember"),
+		v2handler.DeclineMemberHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/leave/approve",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2ApproveLeave"),
+		v2handler.ApproveLeaveHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/join/cancel",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2CancelJoin"),
+		v2handler.CancelJoinHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/sharing",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2ShareSpace"),
+		v2handler.ShareSpaceHandler(deps.Service),
+	)
+	v2.DELETE("/spaces/:space_id/sharing",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2StopSharingSpace"),
+		v2handler.StopSharingSpaceHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/ownership",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2ChangeSpaceOwnership"),
+		v2handler.ChangeSpaceOwnershipHandler(deps.Service),
+	)
+	v2.DELETE("/spaces/:space_id",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2DeleteSpace"),
+		v2handler.DeleteSpaceHandler(deps.Service),
+	)
+	v2.PUT("/spaces/:space_id/homepage",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetSpaceHomepage"),
+		v2handler.SetSpaceHomepageHandler(deps.Service),
+	)
 }
 
 // registerWidgetRoutes registers the sidebar widget mutations

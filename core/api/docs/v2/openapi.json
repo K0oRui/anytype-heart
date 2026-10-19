@@ -55,6 +55,14 @@
           "message"
         ]
       },
+      "AcceptResponse": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
       "AddChatMessageRequest": {
         "properties": {
           "attachments": {
@@ -68,6 +76,22 @@
             "type": "string"
           },
           "text": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AddMembersRequest": {
+        "properties": {
+          "identities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": false
+          },
+          "permissions": {
+            "description": "Permissions is the role every identity is granted: \"viewer\" (default),\n\"editor\", \"admin\", or \"owner\".",
             "type": "string"
           }
         },
@@ -94,6 +118,30 @@
           },
           "source": {
             "description": "Who chose it: request when the create named it, type_default when the type's default_template did.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ApproveMemberRequest": {
+        "properties": {
+          "identity": {
+            "type": "string"
+          },
+          "permissions": {
+            "description": "Permissions defaults to \"viewer\".",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ChangeOwnershipRequest": {
+        "properties": {
+          "new_owner_identity": {
+            "type": "string"
+          },
+          "old_owner_permissions": {
+            "description": "OldOwnerPermissions is the role the previous owner keeps: \"viewer\"\n(default), \"editor\", \"admin\", or \"no_permissions\" to leave.",
             "type": "string"
           }
         },
@@ -368,6 +416,23 @@
         ],
         "type": "object"
       },
+      "CreateInviteRequest": {
+        "properties": {
+          "invite_type": {
+            "description": "InviteType is \"member\" (default), \"guest\", or \"anyone\".",
+            "type": "string"
+          },
+          "permissions": {
+            "description": "Permissions is the role the invite grants: \"viewer\" (default),\n\"editor\", \"admin\", or \"owner\".",
+            "type": "string"
+          },
+          "share_within_space": {
+            "description": "ShareWithinSpace stores the invite in the space, so every member can\nshare it. Otherwise only the owner can.",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
       "CreateResult": {
         "properties": {
           "created": {
@@ -447,6 +512,25 @@
           "property": {
             "description": "property key",
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DeclineMemberRequest": {
+        "properties": {
+          "identity": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DeleteSpaceResponse": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean"
+          },
+          "timestamp": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -593,6 +677,90 @@
         },
         "type": "object"
       },
+      "GuestInvite": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean"
+          },
+          "invite_cid": {
+            "type": "string"
+          },
+          "invite_file_key": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Invite": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean"
+          },
+          "held_by_owner": {
+            "description": "HeldByOwner is set when the invite is kept in the owner's account:\nmembers see it with an empty cid and file key.",
+            "type": "boolean"
+          },
+          "invite_cid": {
+            "type": "string"
+          },
+          "invite_file_key": {
+            "type": "string"
+          },
+          "invite_type": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InviteChange": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean"
+          },
+          "permissions": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InviteView": {
+        "properties": {
+          "creator_icon_cid": {
+            "type": "string"
+          },
+          "creator_name": {
+            "type": "string"
+          },
+          "invite_type": {
+            "type": "string"
+          },
+          "is_guest_invite": {
+            "type": "boolean"
+          },
+          "space_icon_cid": {
+            "type": "string"
+          },
+          "space_icon_option": {
+            "type": "integer"
+          },
+          "space_id": {
+            "type": "string"
+          },
+          "space_name": {
+            "type": "string"
+          },
+          "space_type": {
+            "type": "string"
+          },
+          "space_ux_type": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "Issue": {
         "properties": {
           "hint": {
@@ -617,6 +785,32 @@
         "required": [
           "message"
         ]
+      },
+      "JoinSpaceRequest": {
+        "properties": {
+          "invite_file_key": {
+            "type": "string"
+          },
+          "network_id": {
+            "type": "string"
+          },
+          "space_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LeaveApproveRequest": {
+        "properties": {
+          "identities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": false
+          }
+        },
+        "type": "object"
       },
       "ListResponse-ChatRow": {
         "properties": {
@@ -970,6 +1164,17 @@
           "has_not_granted_spaces"
         ]
       },
+      "MemberPermissionChange": {
+        "properties": {
+          "identity": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "MemberRow": {
         "properties": {
           "icon_image": {
@@ -1064,6 +1269,18 @@
         },
         "type": "object"
       },
+      "RemoveMembersRequest": {
+        "properties": {
+          "identities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": false
+          }
+        },
+        "type": "object"
+      },
       "SchemaEntry": {
         "properties": {
           "endpoint": {
@@ -1123,6 +1340,14 @@
             "type": "string"
           },
           "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SetHomepageRequest": {
+        "properties": {
+          "homepage": {
             "type": "string"
           }
         },
@@ -1225,6 +1450,26 @@
           },
           "name": {
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateInviteRequest": {
+        "properties": {
+          "permissions": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateMembersRequest": {
+        "properties": {
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/MemberPermissionChange"
+            },
+            "type": "array",
+            "uniqueItems": false
           }
         },
         "type": "object"
@@ -2179,6 +2424,179 @@
         ]
       }
     },
+    "/v2/invites/{invite_cid}": {
+      "get": {
+        "description": "Folds the link open without joining. The cid and file key are the credential; no space grant is needed yet, which is why the caller must hold the whole link.",
+        "operationId": "view_invite",
+        "parameters": [
+          {
+            "description": "Invite cid, the part before the fragment",
+            "in": "path",
+            "name": "invite_cid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Invite file key, the fragment after the cid",
+            "in": "query",
+            "name": "file_key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteView"
+                }
+              }
+            },
+            "description": "The space the invite opens"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Missing file key"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "The invite is unknown or revoked"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Preview an invite",
+        "tags": [
+          "Sharing"
+        ]
+      }
+    },
+    "/v2/invites/{invite_cid}/join": {
+      "post": {
+        "description": "The join is asynchronous: the answer says the request was accepted, and the space appears in GET /v2/spaces once the owner approves (or at once for an anyone invite). A dry run validates the body and stops there.",
+        "operationId": "join_space",
+        "parameters": [
+          {
+            "description": "Invite cid, the part before the fragment",
+            "in": "path",
+            "name": "invite_cid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without joining",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinSpaceRequest"
+              }
+            }
+          },
+          "description": "The invite file key, and optionally the space and network ids",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Join request accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "The invite is unknown or revoked"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Join a space",
+        "tags": [
+          "Sharing"
+        ]
+      }
+    },
     "/v2/schemas": {
       "get": {
         "operationId": "list_schemas",
@@ -2645,6 +3063,83 @@
       }
     },
     "/v2/spaces/{space_id}": {
+      "delete": {
+        "description": "Irreversible. The space and its local data are removed for every member; the answer reports the deletion timestamp.",
+        "operationId": "delete_space",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate without deleting",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSpaceResponse"
+                }
+              }
+            },
+            "description": "Deleted, with the timestamp"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space not found or not live"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Delete a space",
+        "tags": [
+          "Sharing"
+        ]
+      },
       "get": {
         "description": "Only live spaces are served. A space that is deleted, left, or still joining is a 404.",
         "operationId": "get_space",
@@ -4848,6 +5343,682 @@
         ]
       }
     },
+    "/v2/spaces/{space_id}/homepage": {
+      "put": {
+        "description": "The homepage is the object (or widget) the space opens on. An empty homepage is a 400.",
+        "operationId": "set_space_homepage",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without committing",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetHomepageRequest"
+              }
+            }
+          },
+          "description": "The homepage object id",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Homepage set"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space not found or not live"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Set the space homepage",
+        "tags": [
+          "Spaces"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/invite": {
+      "delete": {
+        "description": "The link stops working for everyone. Members already in the space are unaffected.",
+        "operationId": "revoke_invite",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate without revoking",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Invite revoked"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No invite, or the space is not live"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Revoke the invite",
+        "tags": [
+          "Sharing"
+        ]
+      },
+      "get": {
+        "description": "The owner-held invite is reported with held_by_owner and no cid or file key. A space with no invite is a 404.",
+        "operationId": "get_invite",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invite"
+                }
+              }
+            },
+            "description": "The current invite"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No invite, or the space is not live"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Get the space invite",
+        "tags": [
+          "Sharing"
+        ]
+      },
+      "patch": {
+        "description": "Changes the role of the space-wide (\"anyone\") invite. The cid and file key stay the same, so a link already shared keeps working. A member or guest invite keeps its role for life: revoke it and create the invite you want instead, which answers 409 here. A role that is already in place answers 403.",
+        "operationId": "update_invite",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate and report without committing",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInviteRequest"
+              }
+            }
+          },
+          "description": "The role to grant",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteChange"
+                }
+              }
+            },
+            "description": "The new role"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No invite, or the space is not live"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Change the invite role",
+        "tags": [
+          "Sharing"
+        ]
+      },
+      "post": {
+        "description": "A space has one invite link at a time; creating it replaces the role the old link grants. A dry run validates the body and stops there.",
+        "operationId": "create_invite",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without creating",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInviteRequest"
+              }
+            }
+          },
+          "description": "The invite to create",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invite"
+                }
+              }
+            },
+            "description": "Created invite"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space not found or not live"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invite"
+                }
+              }
+            },
+            "description": "Dry run; validation result without committing"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Create the space invite",
+        "tags": [
+          "Sharing"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/invite/guest": {
+      "get": {
+        "description": "The guest link admits one person without an account on the network. A space with no guest invite is a 404.",
+        "operationId": "get_guest_invite",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuestInvite"
+                }
+              }
+            },
+            "description": "The guest invite"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No guest invite, or the space is not live"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Get the guest invite",
+        "tags": [
+          "Sharing"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/join/cancel": {
+      "post": {
+        "description": "Withdraws this account's join request for a space it has not been admitted to yet.",
+        "operationId": "cancel_join",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate without cancelling",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Join cancelled"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No pending join for this space"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Cancel a pending join",
+        "tags": [
+          "Members"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/leave/approve": {
+      "post": {
+        "description": "The identities are removed from the space, as if they had left after the owner's approval.",
+        "operationId": "approve_leave",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without approving",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeaveApproveRequest"
+              }
+            }
+          },
+          "description": "The identities whose leave is approved",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Leave approved"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No pending leave for those identities"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Approve leave requests",
+        "tags": [
+          "Members"
+        ]
+      }
+    },
     "/v2/spaces/{space_id}/members": {
       "get": {
         "operationId": "list_members",
@@ -4920,6 +6091,402 @@
         "tags": [
           "Members"
         ]
+      },
+      "patch": {
+        "description": "One request carries every change; a role change for an identity not in the space is a 404.",
+        "operationId": "update_member_permissions",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without committing",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMembersRequest"
+              }
+            }
+          },
+          "description": "The role changes",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Roles changed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space or member not found"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Change member roles",
+        "tags": [
+          "Members"
+        ]
+      },
+      "post": {
+        "description": "Mints or reuses the space invite at the given role; the caller then shares the link. An identity already in the space is not re-invited.",
+        "operationId": "add_members",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without inviting",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMembersRequest"
+              }
+            }
+          },
+          "description": "The identities and the role",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Invites sent"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space not found or not live"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Invite members",
+        "tags": [
+          "Members"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/members/approve": {
+      "post": {
+        "description": "The identity is admitted at the given role. A request that is not pending is a 404.",
+        "operationId": "approve_member",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without approving",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveMemberRequest"
+              }
+            }
+          },
+          "description": "The identity and the role to grant",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Request approved"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No pending request for that identity"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Approve a join request",
+        "tags": [
+          "Members"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/members/decline": {
+      "post": {
+        "description": "The identity is told the request was declined and gains no access.",
+        "operationId": "decline_member",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without declining",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeclineMemberRequest"
+              }
+            }
+          },
+          "description": "The identity to decline",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Request declined"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "No pending request for that identity"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Decline a join request",
+        "tags": [
+          "Members"
+        ]
       }
     },
     "/v2/spaces/{space_id}/members/me": {
@@ -4974,6 +6541,106 @@
           }
         ],
         "summary": "Get the current member",
+        "tags": [
+          "Members"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/members/remove": {
+      "post": {
+        "description": "The identities lose access at once. Removing the owner is refused; transfer ownership first.",
+        "operationId": "remove_members",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without removing",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveMembersRequest"
+              }
+            }
+          },
+          "description": "The identities to remove",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Members removed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space or member not found"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Remove members",
         "tags": [
           "Members"
         ]
@@ -5733,6 +7400,106 @@
         "summary": "Start an object's discussion",
         "tags": [
           "Chat"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/ownership": {
+      "post": {
+        "description": "Irreversible. The new owner must already be a member. old_owner_permissions decides what the caller keeps, and no_permissions leaves the space.",
+        "operationId": "change_space_ownership",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate the body without transferring",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key with the same body replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeOwnershipRequest"
+              }
+            }
+          },
+          "description": "The new owner and the caller's remaining role",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Ownership transferred"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Validation failure"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space or identity not found"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/RequestTooLarge"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Transfer ownership",
+        "tags": [
+          "Sharing"
         ]
       }
     },
@@ -7175,6 +8942,162 @@
         "summary": "Stream a space search",
         "tags": [
           "Search"
+        ]
+      }
+    },
+    "/v2/spaces/{space_id}/sharing": {
+      "delete": {
+        "description": "The invite stops working and the space is private again. Members already in the space stay.",
+        "operationId": "stop_sharing_space",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate without stopping",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Space is private"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space not found or not live"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Stop sharing a space",
+        "tags": [
+          "Sharing"
+        ]
+      },
+      "post": {
+        "description": "Makes a private space shareable so an invite can be minted. A space type that cannot be shared is a 409.",
+        "operationId": "share_space",
+        "parameters": [
+          {
+            "description": "Space id, from GET /v2/spaces",
+            "in": "path",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Validate without sharing",
+            "in": "query",
+            "name": "dry_run",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Replay guard: the same key replays the stored response",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptResponse"
+                }
+              }
+            },
+            "description": "Space is shareable"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Space not found or not live"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "bearerauth": []
+          }
+        ],
+        "summary": "Share a space",
+        "tags": [
+          "Sharing"
         ]
       }
     },
@@ -9384,6 +11307,10 @@
     {
       "description": "Who is in a space, and which of them you are.",
       "name": "Members"
+    },
+    {
+      "description": "Invite links, membership changes, ownership and the space lifecycle.",
+      "name": "Sharing"
     },
     {
       "description": "Upload files and download file or icon content.",

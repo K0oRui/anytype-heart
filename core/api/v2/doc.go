@@ -28,6 +28,8 @@
 //	@tag.description				Messages, reactions and read state. Chats store messages outside blocks, paged by order-id cursors.
 //	@tag.name						Members
 //	@tag.description				Who is in a space, and which of them you are.
+//	@tag.name						Sharing
+//	@tag.description				Invite links, membership changes, ownership and the space lifecycle.
 //	@tag.name						Files
 //	@tag.description				Upload files and download file or icon content.
 //	@tag.name						Templates

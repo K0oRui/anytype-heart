@@ -80,6 +80,26 @@ var operations = map[string]operation{
 	OpHeadFile:             {"HEAD", "/v2/spaces/{space_id}/files/{file_id}/content"},
 	OpListMembers:          {"GET", "/v2/spaces/{space_id}/members"},
 	OpGetMemberMe:          {"GET", "/v2/spaces/{space_id}/members/me"},
+	// space administration
+	OpGetInvite:                   {"GET", "/v2/spaces/{space_id}/invite"},
+	OpCreateInvite:                {"POST", "/v2/spaces/{space_id}/invite"},
+	OpUpdateInvite:                {"PATCH", "/v2/spaces/{space_id}/invite"},
+	OpRevokeInvite:                {"DELETE", "/v2/spaces/{space_id}/invite"},
+	OpGetGuestInvite:              {"GET", "/v2/spaces/{space_id}/invite/guest"},
+	OpViewInvite:                  {"GET", "/v2/invites/{invite_cid}"},
+	OpJoinSpace:                   {"POST", "/v2/invites/{invite_cid}/join"},
+	OpAddMembers:                  {"POST", "/v2/spaces/{space_id}/members"},
+	OpUpdateMemberPermissions:     {"PATCH", "/v2/spaces/{space_id}/members"},
+	OpRemoveMembers:               {"POST", "/v2/spaces/{space_id}/members/remove"},
+	OpApproveMember:               {"POST", "/v2/spaces/{space_id}/members/approve"},
+	OpDeclineMember:               {"POST", "/v2/spaces/{space_id}/members/decline"},
+	OpApproveLeave:                {"POST", "/v2/spaces/{space_id}/leave/approve"},
+	OpCancelJoin:                  {"POST", "/v2/spaces/{space_id}/join/cancel"},
+	OpShareSpace:                  {"POST", "/v2/spaces/{space_id}/sharing"},
+	OpStopSharingSpace:            {"DELETE", "/v2/spaces/{space_id}/sharing"},
+	OpChangeSpaceOwnership:        {"POST", "/v2/spaces/{space_id}/ownership"},
+	OpDeleteSpace:                 {"DELETE", "/v2/spaces/{space_id}"},
+	OpSetSpaceHomepage:            {"PUT", "/v2/spaces/{space_id}/homepage"},
 	OpListObjects:          {"GET", "/v2/spaces/{space_id}/objects"},
 	OpCreateObject:         {"POST", "/v2/spaces/{space_id}/objects"},
 	OpDeleteObject:         {"DELETE", "/v2/spaces/{space_id}/objects/{object_id}"},
@@ -170,6 +190,26 @@ const (
 	OpCreateWidget         = "create_widget"
 	OpUpdateWidget         = "update_widget"
 	OpDeleteWidget         = "delete_widget"
+	// space administration
+	OpGetInvite                  = "get_invite"
+	OpCreateInvite               = "create_invite"
+	OpUpdateInvite               = "update_invite"
+	OpRevokeInvite               = "revoke_invite"
+	OpGetGuestInvite             = "get_guest_invite"
+	OpViewInvite                 = "view_invite"
+	OpJoinSpace                  = "join_space"
+	OpAddMembers                 = "add_members"
+	OpUpdateMemberPermissions    = "update_member_permissions"
+	OpRemoveMembers              = "remove_members"
+	OpApproveMember              = "approve_member"
+	OpDeclineMember              = "decline_member"
+	OpApproveLeave               = "approve_leave"
+	OpCancelJoin                 = "cancel_join"
+	OpShareSpace                 = "share_space"
+	OpStopSharingSpace           = "stop_sharing_space"
+	OpChangeSpaceOwnership       = "change_space_ownership"
+	OpDeleteSpace                = "delete_space"
+	OpSetSpaceHomepage           = "set_space_homepage"
 )
 
 // Operation returns the method and path template of an operationId, and

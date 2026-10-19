@@ -106,7 +106,7 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 	var jsonDoc responseContractDocument
 	require.NoError(t, json.Unmarshal(jsonBody, &jsonDoc))
 	jsonOperations := responseContractOperations(t, jsonDoc)
-	require.Len(t, jsonOperations, 58)
+	require.Len(t, jsonOperations, 77)
 
 	yamlBody, err := os.ReadFile("../docs/v2/openapi.yaml")
 	require.NoError(t, err)
@@ -200,10 +200,10 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 	for _, operation := range jsonOperations {
 		pairCount += len(operation.Responses)
 	}
-	assert.Equal(t, 377, pairCount, "the checked-in response inventory changes only deliberately")
+	assert.Equal(t, 516, pairCount, "the checked-in response inventory changes only deliberately")
 
 	dryRunCreates := stringSet(
-		"add_chat_message", "create_chat", "create_collection", "create_object", "create_property",
+		"add_chat_message", "create_chat", "create_collection", "create_invite", "create_object", "create_property",
 		"create_query", "create_space", "create_template", "create_type", "create_widget", "upload_file",
 	)
 	idempotent := stringSet(
@@ -218,12 +218,20 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 		// has a discussion, and that description says so rather than
 		// claiming the 200 is a dry run only
 		"create_discussion",
+		"create_invite", "update_invite", "revoke_invite", "join_space",
+		"add_members", "update_member_permissions", "remove_members", "approve_member",
+		"decline_member", "approve_leave", "cancel_join",
+		"share_space", "stop_sharing_space", "change_space_ownership", "delete_space",
+		"set_space_homepage",
 	)
 	requestBodyLimited := stringSet(
 		"add_chat_message", "create_chat", "create_collection", "create_property", "create_query", "create_space",
 		"edit_chat_message", "read_chat", "toggle_chat_reaction", "update_property", "update_space", "update_type", "upload_file",
 		"publish_chat_status",
 		"create_widget", "update_widget",
+		"create_invite", "update_invite", "join_space", "add_members", "update_member_permissions",
+		"remove_members", "approve_member", "decline_member", "approve_leave", "change_space_ownership",
+		"set_space_homepage",
 	)
 
 	// A concurrency cap is not a rate limit: the streams refuse when too many

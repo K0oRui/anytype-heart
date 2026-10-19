@@ -1,6 +1,61 @@
 {
  "tools": [
   {
+   "name": "view_invite",
+   "description": "Preview an invite. Folds the link open without joining. The cid and file key are the credential; no space grant is needed yet, which is why the caller must hold the whole link.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "file_key": {
+      "description": "Invite file key, the fragment after the cid",
+      "type": "string"
+     },
+     "invite_cid": {
+      "description": "Invite cid, the part before the fragment",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file_key",
+     "invite_cid"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "readOnlyHint": true
+   }
+  },
+  {
+   "name": "join_space",
+   "description": "Join a space. The join is asynchronous: the answer says the request was accepted, and the space appears in `list_spaces` once the owner approves (or at once for an anyone invite). A dry run validates the body and stops there.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without joining",
+      "type": "boolean"
+     },
+     "invite_cid": {
+      "description": "Invite cid, the part before the fragment",
+      "type": "string"
+     },
+     "invite_file_key": {
+      "type": "string"
+     },
+     "network_id": {
+      "type": "string"
+     },
+     "space_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "invite_cid"
+    ],
+    "type": "object"
+   }
+  },
+  {
    "name": "list_schemas",
    "description": "List schemas",
    "inputSchema": {
@@ -349,6 +404,30 @@
      "space_id"
     ],
     "type": "object"
+   }
+  },
+  {
+   "name": "delete_space",
+   "description": "Delete a space. Irreversible. The space and its local data are removed for every member; the answer reports the deletion timestamp.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without deleting",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "destructiveHint": true
    }
   },
   {
@@ -795,6 +874,200 @@
    }
   },
   {
+   "name": "set_space_homepage",
+   "description": "Set the space homepage. The homepage is the object (or widget) the space opens on. An empty homepage is a 400.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "homepage": {
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "get_invite",
+   "description": "Get the space invite. The owner-held invite is reported with held_by_owner and no cid or file key. A space with no invite is a 404.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "readOnlyHint": true
+   }
+  },
+  {
+   "name": "create_invite",
+   "description": "Create the space invite. A space has one invite link at a time; creating it replaces the role the old link grants. A dry run validates the body and stops there.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without creating",
+      "type": "boolean"
+     },
+     "invite_type": {
+      "description": "InviteType is \"member\" (default), \"guest\", or \"anyone\".",
+      "type": "string"
+     },
+     "permissions": {
+      "description": "Permissions is the role the invite grants: \"viewer\" (default),\n\"editor\", \"admin\", or \"owner\".",
+      "type": "string"
+     },
+     "share_within_space": {
+      "description": "ShareWithinSpace stores the invite in the space, so every member can\nshare it. Otherwise only the owner can.",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "update_invite",
+   "description": "Change the invite role. Changes the role of the space-wide (\"anyone\") invite. The cid and file key stay the same, so a link already shared keeps working. A member or guest invite keeps its role for life: revoke it and create the invite you want instead, which answers 409 here. A role that is already in place answers 403.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate and report without committing",
+      "type": "boolean"
+     },
+     "permissions": {
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "revoke_invite",
+   "description": "Revoke the invite. The link stops working for everyone. Members already in the space are unaffected.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without revoking",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "destructiveHint": true
+   }
+  },
+  {
+   "name": "get_guest_invite",
+   "description": "Get the guest invite. The guest link admits one person without an account on the network. A space with no guest invite is a 404.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "readOnlyHint": true
+   }
+  },
+  {
+   "name": "cancel_join",
+   "description": "Cancel a pending join. Withdraws this account's join request for a space it has not been admitted to yet.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without cancelling",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "approve_leave",
+   "description": "Approve leave requests. The identities are removed from the space, as if they had left after the owner's approval.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without approving",
+      "type": "boolean"
+     },
+     "identities": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
    "name": "list_members",
    "description": "List members",
    "inputSchema": {
@@ -825,6 +1098,131 @@
    }
   },
   {
+   "name": "add_members",
+   "description": "Invite members. Mints or reuses the space invite at the given role; the caller then shares the link. An identity already in the space is not re-invited.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without inviting",
+      "type": "boolean"
+     },
+     "identities": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "permissions": {
+      "description": "Permissions is the role every identity is granted: \"viewer\" (default),\n\"editor\", \"admin\", or \"owner\".",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "update_member_permissions",
+   "description": "Change member roles. One request carries every change; a role change for an identity not in the space is a 404.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "changes": {
+      "items": {
+       "$ref": "#/$defs/MemberPermissionChange"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object",
+    "$defs": {
+     "MemberPermissionChange": {
+      "properties": {
+       "identity": {
+        "type": "string"
+       },
+       "permissions": {
+        "type": "string"
+       }
+      },
+      "type": "object"
+     }
+    }
+   }
+  },
+  {
+   "name": "approve_member",
+   "description": "Approve a join request. The identity is admitted at the given role. A request that is not pending is a 404.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without approving",
+      "type": "boolean"
+     },
+     "identity": {
+      "type": "string"
+     },
+     "permissions": {
+      "description": "Permissions defaults to \"viewer\".",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "decline_member",
+   "description": "Decline a join request. The identity is told the request was declined and gains no access.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without declining",
+      "type": "boolean"
+     },
+     "identity": {
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
    "name": "get_member_me",
    "description": "Get the current member. The identity is taken from the account this API runs against; there is no member id to send.",
    "inputSchema": {
@@ -842,6 +1240,34 @@
    },
    "annotations": {
     "readOnlyHint": true
+   }
+  },
+  {
+   "name": "remove_members",
+   "description": "Remove members. The identities lose access at once. Removing the owner is refused; transfer ownership first.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without removing",
+      "type": "boolean"
+     },
+     "identities": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
    }
   },
   {
@@ -1500,6 +1926,34 @@
     },
     "required": [
      "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "change_space_ownership",
+   "description": "Transfer ownership. Irreversible. The new owner must already be a member. old_owner_permissions decides what the caller keeps, and no_permissions leaves the space.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without transferring",
+      "type": "boolean"
+     },
+     "new_owner_identity": {
+      "type": "string"
+     },
+     "old_owner_permissions": {
+      "description": "OldOwnerPermissions is the role the previous owner keeps: \"viewer\"\n(default), \"editor\", \"admin\", or \"no_permissions\" to leave.",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
      "space_id"
     ],
     "type": "object"
@@ -2700,6 +3154,51 @@
    },
    "annotations": {
     "readOnlyHint": true
+   }
+  },
+  {
+   "name": "share_space",
+   "description": "Share a space. Makes a private space shareable so an invite can be minted. A space type that cannot be shared is a 409.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without sharing",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "stop_sharing_space",
+   "description": "Stop sharing a space. The invite stops working and the space is private again. Members already in the space stay.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without stopping",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "destructiveHint": true
    }
   },
   {

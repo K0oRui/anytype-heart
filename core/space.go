@@ -94,6 +94,7 @@ func (mw *Middleware) SpaceInviteChange(cctx context.Context, req *pb.RpcSpaceIn
 			errToCode(space.ErrSpaceNotExists, pb.RpcSpaceInviteChangeResponseError_NO_SUCH_SPACE),
 			errToCode(acl.ErrPersonalSpace, pb.RpcSpaceInviteChangeResponseError_BAD_INPUT),
 			errToCode(acl.ErrAclRequestFailed, pb.RpcSpaceInviteChangeResponseError_REQUEST_FAILED),
+			errToCode(acl.ErrIncorrectPermissions, pb.RpcSpaceInviteChangeResponseError_INCORRECT_PERMISSIONS),
 			errToCode(inviteservice.ErrInviteNotShareable, pb.RpcSpaceInviteChangeResponseError_INVITE_NOT_SHAREABLE),
 		)
 		return &pb.RpcSpaceInviteChangeResponse{

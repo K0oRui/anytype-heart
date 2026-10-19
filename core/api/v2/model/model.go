@@ -30,6 +30,11 @@ const (
 	// the same request", this one means "retrying can never succeed, close
 	// something" — and a client that cannot tell them apart retries forever.
 	CodeTooManyStreams = "too_many_streams"
+	// CodeConflict is a 409 for a state conflict the request cannot resolve
+	// by retrying: an invite that is already shared, or a join across a
+	// different network. Distinct from CodeIdempotencyConflict, which means
+	// the same replay key carried a different request.
+	CodeConflict = "conflict"
 	// The space-grant codes. Messages NAME the actual grant: error-guided
 	// self-correction is the v2 design language, and enumeration resistance
 	// is a non-goal for a localhost single-user API.

@@ -1884,6 +1884,594 @@ func (_c *MockClientCommands_RelationOptions_Call) RunAndReturn(run func(context
 	return _c
 }
 
+// SpaceChangeOwnership provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceChangeOwnership(_a0 context.Context, _a1 *pb.RpcSpaceChangeOwnershipRequest) *pb.RpcSpaceChangeOwnershipResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceChangeOwnership")
+	}
+
+	var r0 *pb.RpcSpaceChangeOwnershipResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceChangeOwnershipRequest) *pb.RpcSpaceChangeOwnershipResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceChangeOwnershipResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceChangeOwnership_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceChangeOwnership'
+type MockClientCommands_SpaceChangeOwnership_Call struct {
+	*mock.Call
+}
+
+// SpaceChangeOwnership is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceChangeOwnershipRequest
+func (_e *MockClientCommands_Expecter) SpaceChangeOwnership(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceChangeOwnership_Call {
+	return &MockClientCommands_SpaceChangeOwnership_Call{Call: _e.mock.On("SpaceChangeOwnership", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceChangeOwnership_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceChangeOwnershipRequest)) *MockClientCommands_SpaceChangeOwnership_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceChangeOwnershipRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceChangeOwnership_Call) Return(_a0 *pb.RpcSpaceChangeOwnershipResponse) *MockClientCommands_SpaceChangeOwnership_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceChangeOwnership_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceChangeOwnershipRequest) *pb.RpcSpaceChangeOwnershipResponse) *MockClientCommands_SpaceChangeOwnership_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceDelete provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceDelete(_a0 context.Context, _a1 *pb.RpcSpaceDeleteRequest) *pb.RpcSpaceDeleteResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceDelete")
+	}
+
+	var r0 *pb.RpcSpaceDeleteResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceDeleteRequest) *pb.RpcSpaceDeleteResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceDeleteResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceDelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceDelete'
+type MockClientCommands_SpaceDelete_Call struct {
+	*mock.Call
+}
+
+// SpaceDelete is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceDeleteRequest
+func (_e *MockClientCommands_Expecter) SpaceDelete(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceDelete_Call {
+	return &MockClientCommands_SpaceDelete_Call{Call: _e.mock.On("SpaceDelete", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceDelete_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceDeleteRequest)) *MockClientCommands_SpaceDelete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceDeleteRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceDelete_Call) Return(_a0 *pb.RpcSpaceDeleteResponse) *MockClientCommands_SpaceDelete_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceDelete_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceDeleteRequest) *pb.RpcSpaceDeleteResponse) *MockClientCommands_SpaceDelete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceInviteChange provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceInviteChange(_a0 context.Context, _a1 *pb.RpcSpaceInviteChangeRequest) *pb.RpcSpaceInviteChangeResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceInviteChange")
+	}
+
+	var r0 *pb.RpcSpaceInviteChangeResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceInviteChangeRequest) *pb.RpcSpaceInviteChangeResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceInviteChangeResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceInviteChange_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceInviteChange'
+type MockClientCommands_SpaceInviteChange_Call struct {
+	*mock.Call
+}
+
+// SpaceInviteChange is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceInviteChangeRequest
+func (_e *MockClientCommands_Expecter) SpaceInviteChange(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceInviteChange_Call {
+	return &MockClientCommands_SpaceInviteChange_Call{Call: _e.mock.On("SpaceInviteChange", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceInviteChange_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceInviteChangeRequest)) *MockClientCommands_SpaceInviteChange_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceInviteChangeRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteChange_Call) Return(_a0 *pb.RpcSpaceInviteChangeResponse) *MockClientCommands_SpaceInviteChange_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteChange_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceInviteChangeRequest) *pb.RpcSpaceInviteChangeResponse) *MockClientCommands_SpaceInviteChange_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceInviteGenerate provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceInviteGenerate(_a0 context.Context, _a1 *pb.RpcSpaceInviteGenerateRequest) *pb.RpcSpaceInviteGenerateResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceInviteGenerate")
+	}
+
+	var r0 *pb.RpcSpaceInviteGenerateResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceInviteGenerateRequest) *pb.RpcSpaceInviteGenerateResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceInviteGenerateResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceInviteGenerate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceInviteGenerate'
+type MockClientCommands_SpaceInviteGenerate_Call struct {
+	*mock.Call
+}
+
+// SpaceInviteGenerate is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceInviteGenerateRequest
+func (_e *MockClientCommands_Expecter) SpaceInviteGenerate(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceInviteGenerate_Call {
+	return &MockClientCommands_SpaceInviteGenerate_Call{Call: _e.mock.On("SpaceInviteGenerate", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceInviteGenerate_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceInviteGenerateRequest)) *MockClientCommands_SpaceInviteGenerate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceInviteGenerateRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteGenerate_Call) Return(_a0 *pb.RpcSpaceInviteGenerateResponse) *MockClientCommands_SpaceInviteGenerate_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteGenerate_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceInviteGenerateRequest) *pb.RpcSpaceInviteGenerateResponse) *MockClientCommands_SpaceInviteGenerate_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceInviteGetCurrent provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceInviteGetCurrent(_a0 context.Context, _a1 *pb.RpcSpaceInviteGetCurrentRequest) *pb.RpcSpaceInviteGetCurrentResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceInviteGetCurrent")
+	}
+
+	var r0 *pb.RpcSpaceInviteGetCurrentResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceInviteGetCurrentRequest) *pb.RpcSpaceInviteGetCurrentResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceInviteGetCurrentResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceInviteGetCurrent_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceInviteGetCurrent'
+type MockClientCommands_SpaceInviteGetCurrent_Call struct {
+	*mock.Call
+}
+
+// SpaceInviteGetCurrent is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceInviteGetCurrentRequest
+func (_e *MockClientCommands_Expecter) SpaceInviteGetCurrent(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceInviteGetCurrent_Call {
+	return &MockClientCommands_SpaceInviteGetCurrent_Call{Call: _e.mock.On("SpaceInviteGetCurrent", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceInviteGetCurrent_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceInviteGetCurrentRequest)) *MockClientCommands_SpaceInviteGetCurrent_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceInviteGetCurrentRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteGetCurrent_Call) Return(_a0 *pb.RpcSpaceInviteGetCurrentResponse) *MockClientCommands_SpaceInviteGetCurrent_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteGetCurrent_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceInviteGetCurrentRequest) *pb.RpcSpaceInviteGetCurrentResponse) *MockClientCommands_SpaceInviteGetCurrent_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceInviteGetGuest provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceInviteGetGuest(_a0 context.Context, _a1 *pb.RpcSpaceInviteGetGuestRequest) *pb.RpcSpaceInviteGetGuestResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceInviteGetGuest")
+	}
+
+	var r0 *pb.RpcSpaceInviteGetGuestResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceInviteGetGuestRequest) *pb.RpcSpaceInviteGetGuestResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceInviteGetGuestResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceInviteGetGuest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceInviteGetGuest'
+type MockClientCommands_SpaceInviteGetGuest_Call struct {
+	*mock.Call
+}
+
+// SpaceInviteGetGuest is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceInviteGetGuestRequest
+func (_e *MockClientCommands_Expecter) SpaceInviteGetGuest(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceInviteGetGuest_Call {
+	return &MockClientCommands_SpaceInviteGetGuest_Call{Call: _e.mock.On("SpaceInviteGetGuest", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceInviteGetGuest_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceInviteGetGuestRequest)) *MockClientCommands_SpaceInviteGetGuest_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceInviteGetGuestRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteGetGuest_Call) Return(_a0 *pb.RpcSpaceInviteGetGuestResponse) *MockClientCommands_SpaceInviteGetGuest_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteGetGuest_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceInviteGetGuestRequest) *pb.RpcSpaceInviteGetGuestResponse) *MockClientCommands_SpaceInviteGetGuest_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceInviteRevoke provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceInviteRevoke(_a0 context.Context, _a1 *pb.RpcSpaceInviteRevokeRequest) *pb.RpcSpaceInviteRevokeResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceInviteRevoke")
+	}
+
+	var r0 *pb.RpcSpaceInviteRevokeResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceInviteRevokeRequest) *pb.RpcSpaceInviteRevokeResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceInviteRevokeResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceInviteRevoke_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceInviteRevoke'
+type MockClientCommands_SpaceInviteRevoke_Call struct {
+	*mock.Call
+}
+
+// SpaceInviteRevoke is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceInviteRevokeRequest
+func (_e *MockClientCommands_Expecter) SpaceInviteRevoke(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceInviteRevoke_Call {
+	return &MockClientCommands_SpaceInviteRevoke_Call{Call: _e.mock.On("SpaceInviteRevoke", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceInviteRevoke_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceInviteRevokeRequest)) *MockClientCommands_SpaceInviteRevoke_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceInviteRevokeRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteRevoke_Call) Return(_a0 *pb.RpcSpaceInviteRevokeResponse) *MockClientCommands_SpaceInviteRevoke_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteRevoke_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceInviteRevokeRequest) *pb.RpcSpaceInviteRevokeResponse) *MockClientCommands_SpaceInviteRevoke_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceInviteView provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceInviteView(_a0 context.Context, _a1 *pb.RpcSpaceInviteViewRequest) *pb.RpcSpaceInviteViewResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceInviteView")
+	}
+
+	var r0 *pb.RpcSpaceInviteViewResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceInviteViewRequest) *pb.RpcSpaceInviteViewResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceInviteViewResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceInviteView_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceInviteView'
+type MockClientCommands_SpaceInviteView_Call struct {
+	*mock.Call
+}
+
+// SpaceInviteView is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceInviteViewRequest
+func (_e *MockClientCommands_Expecter) SpaceInviteView(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceInviteView_Call {
+	return &MockClientCommands_SpaceInviteView_Call{Call: _e.mock.On("SpaceInviteView", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceInviteView_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceInviteViewRequest)) *MockClientCommands_SpaceInviteView_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceInviteViewRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteView_Call) Return(_a0 *pb.RpcSpaceInviteViewResponse) *MockClientCommands_SpaceInviteView_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceInviteView_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceInviteViewRequest) *pb.RpcSpaceInviteViewResponse) *MockClientCommands_SpaceInviteView_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceJoin provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceJoin(_a0 context.Context, _a1 *pb.RpcSpaceJoinRequest) *pb.RpcSpaceJoinResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceJoin")
+	}
+
+	var r0 *pb.RpcSpaceJoinResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceJoinRequest) *pb.RpcSpaceJoinResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceJoinResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceJoin_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceJoin'
+type MockClientCommands_SpaceJoin_Call struct {
+	*mock.Call
+}
+
+// SpaceJoin is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceJoinRequest
+func (_e *MockClientCommands_Expecter) SpaceJoin(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceJoin_Call {
+	return &MockClientCommands_SpaceJoin_Call{Call: _e.mock.On("SpaceJoin", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceJoin_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceJoinRequest)) *MockClientCommands_SpaceJoin_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceJoinRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceJoin_Call) Return(_a0 *pb.RpcSpaceJoinResponse) *MockClientCommands_SpaceJoin_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceJoin_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceJoinRequest) *pb.RpcSpaceJoinResponse) *MockClientCommands_SpaceJoin_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceJoinCancel provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceJoinCancel(_a0 context.Context, _a1 *pb.RpcSpaceJoinCancelRequest) *pb.RpcSpaceJoinCancelResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceJoinCancel")
+	}
+
+	var r0 *pb.RpcSpaceJoinCancelResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceJoinCancelRequest) *pb.RpcSpaceJoinCancelResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceJoinCancelResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceJoinCancel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceJoinCancel'
+type MockClientCommands_SpaceJoinCancel_Call struct {
+	*mock.Call
+}
+
+// SpaceJoinCancel is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceJoinCancelRequest
+func (_e *MockClientCommands_Expecter) SpaceJoinCancel(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceJoinCancel_Call {
+	return &MockClientCommands_SpaceJoinCancel_Call{Call: _e.mock.On("SpaceJoinCancel", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceJoinCancel_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceJoinCancelRequest)) *MockClientCommands_SpaceJoinCancel_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceJoinCancelRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceJoinCancel_Call) Return(_a0 *pb.RpcSpaceJoinCancelResponse) *MockClientCommands_SpaceJoinCancel_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceJoinCancel_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceJoinCancelRequest) *pb.RpcSpaceJoinCancelResponse) *MockClientCommands_SpaceJoinCancel_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceLeaveApprove provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceLeaveApprove(_a0 context.Context, _a1 *pb.RpcSpaceLeaveApproveRequest) *pb.RpcSpaceLeaveApproveResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceLeaveApprove")
+	}
+
+	var r0 *pb.RpcSpaceLeaveApproveResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceLeaveApproveRequest) *pb.RpcSpaceLeaveApproveResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceLeaveApproveResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceLeaveApprove_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceLeaveApprove'
+type MockClientCommands_SpaceLeaveApprove_Call struct {
+	*mock.Call
+}
+
+// SpaceLeaveApprove is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceLeaveApproveRequest
+func (_e *MockClientCommands_Expecter) SpaceLeaveApprove(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceLeaveApprove_Call {
+	return &MockClientCommands_SpaceLeaveApprove_Call{Call: _e.mock.On("SpaceLeaveApprove", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceLeaveApprove_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceLeaveApproveRequest)) *MockClientCommands_SpaceLeaveApprove_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceLeaveApproveRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceLeaveApprove_Call) Return(_a0 *pb.RpcSpaceLeaveApproveResponse) *MockClientCommands_SpaceLeaveApprove_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceLeaveApprove_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceLeaveApproveRequest) *pb.RpcSpaceLeaveApproveResponse) *MockClientCommands_SpaceLeaveApprove_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceMakeShareable provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceMakeShareable(_a0 context.Context, _a1 *pb.RpcSpaceMakeShareableRequest) *pb.RpcSpaceMakeShareableResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceMakeShareable")
+	}
+
+	var r0 *pb.RpcSpaceMakeShareableResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceMakeShareableRequest) *pb.RpcSpaceMakeShareableResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceMakeShareableResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceMakeShareable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceMakeShareable'
+type MockClientCommands_SpaceMakeShareable_Call struct {
+	*mock.Call
+}
+
+// SpaceMakeShareable is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceMakeShareableRequest
+func (_e *MockClientCommands_Expecter) SpaceMakeShareable(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceMakeShareable_Call {
+	return &MockClientCommands_SpaceMakeShareable_Call{Call: _e.mock.On("SpaceMakeShareable", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceMakeShareable_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceMakeShareableRequest)) *MockClientCommands_SpaceMakeShareable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceMakeShareableRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceMakeShareable_Call) Return(_a0 *pb.RpcSpaceMakeShareableResponse) *MockClientCommands_SpaceMakeShareable_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceMakeShareable_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceMakeShareableRequest) *pb.RpcSpaceMakeShareableResponse) *MockClientCommands_SpaceMakeShareable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SpaceParticipantPermissionsChange provides a mock function with given fields: _a0, _a1
 func (_m *MockClientCommands) SpaceParticipantPermissionsChange(_a0 context.Context, _a1 *pb.RpcSpaceParticipantPermissionsChangeRequest) *pb.RpcSpaceParticipantPermissionsChangeResponse {
 	ret := _m.Called(_a0, _a1)
@@ -1982,6 +2570,55 @@ func (_c *MockClientCommands_SpaceParticipantRemove_Call) RunAndReturn(run func(
 	return _c
 }
 
+// SpaceParticipantsAddList provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceParticipantsAddList(_a0 context.Context, _a1 *pb.RpcSpaceParticipantsAddListRequest) *pb.RpcSpaceParticipantsAddListResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceParticipantsAddList")
+	}
+
+	var r0 *pb.RpcSpaceParticipantsAddListResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceParticipantsAddListRequest) *pb.RpcSpaceParticipantsAddListResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceParticipantsAddListResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceParticipantsAddList_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceParticipantsAddList'
+type MockClientCommands_SpaceParticipantsAddList_Call struct {
+	*mock.Call
+}
+
+// SpaceParticipantsAddList is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceParticipantsAddListRequest
+func (_e *MockClientCommands_Expecter) SpaceParticipantsAddList(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceParticipantsAddList_Call {
+	return &MockClientCommands_SpaceParticipantsAddList_Call{Call: _e.mock.On("SpaceParticipantsAddList", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceParticipantsAddList_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceParticipantsAddListRequest)) *MockClientCommands_SpaceParticipantsAddList_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceParticipantsAddListRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceParticipantsAddList_Call) Return(_a0 *pb.RpcSpaceParticipantsAddListResponse) *MockClientCommands_SpaceParticipantsAddList_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceParticipantsAddList_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceParticipantsAddListRequest) *pb.RpcSpaceParticipantsAddListResponse) *MockClientCommands_SpaceParticipantsAddList_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SpaceRequestApprove provides a mock function with given fields: _a0, _a1
 func (_m *MockClientCommands) SpaceRequestApprove(_a0 context.Context, _a1 *pb.RpcSpaceRequestApproveRequest) *pb.RpcSpaceRequestApproveResponse {
 	ret := _m.Called(_a0, _a1)
@@ -2076,6 +2713,55 @@ func (_c *MockClientCommands_SpaceRequestDecline_Call) Return(_a0 *pb.RpcSpaceRe
 }
 
 func (_c *MockClientCommands_SpaceRequestDecline_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceRequestDeclineRequest) *pb.RpcSpaceRequestDeclineResponse) *MockClientCommands_SpaceRequestDecline_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SpaceStopSharing provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) SpaceStopSharing(_a0 context.Context, _a1 *pb.RpcSpaceStopSharingRequest) *pb.RpcSpaceStopSharingResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SpaceStopSharing")
+	}
+
+	var r0 *pb.RpcSpaceStopSharingResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcSpaceStopSharingRequest) *pb.RpcSpaceStopSharingResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcSpaceStopSharingResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_SpaceStopSharing_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SpaceStopSharing'
+type MockClientCommands_SpaceStopSharing_Call struct {
+	*mock.Call
+}
+
+// SpaceStopSharing is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcSpaceStopSharingRequest
+func (_e *MockClientCommands_Expecter) SpaceStopSharing(_a0 interface{}, _a1 interface{}) *MockClientCommands_SpaceStopSharing_Call {
+	return &MockClientCommands_SpaceStopSharing_Call{Call: _e.mock.On("SpaceStopSharing", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_SpaceStopSharing_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcSpaceStopSharingRequest)) *MockClientCommands_SpaceStopSharing_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcSpaceStopSharingRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceStopSharing_Call) Return(_a0 *pb.RpcSpaceStopSharingResponse) *MockClientCommands_SpaceStopSharing_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_SpaceStopSharing_Call) RunAndReturn(run func(context.Context, *pb.RpcSpaceStopSharingRequest) *pb.RpcSpaceStopSharingResponse) *MockClientCommands_SpaceStopSharing_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2223,6 +2909,55 @@ func (_c *MockClientCommands_WorkspaceOpen_Call) Return(_a0 *pb.RpcWorkspaceOpen
 }
 
 func (_c *MockClientCommands_WorkspaceOpen_Call) RunAndReturn(run func(context.Context, *pb.RpcWorkspaceOpenRequest) *pb.RpcWorkspaceOpenResponse) *MockClientCommands_WorkspaceOpen_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// WorkspaceSetHomepage provides a mock function with given fields: _a0, _a1
+func (_m *MockClientCommands) WorkspaceSetHomepage(_a0 context.Context, _a1 *pb.RpcWorkspaceSetHomepageRequest) *pb.RpcWorkspaceSetHomepageResponse {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WorkspaceSetHomepage")
+	}
+
+	var r0 *pb.RpcWorkspaceSetHomepageResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *pb.RpcWorkspaceSetHomepageRequest) *pb.RpcWorkspaceSetHomepageResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pb.RpcWorkspaceSetHomepageResponse)
+		}
+	}
+
+	return r0
+}
+
+// MockClientCommands_WorkspaceSetHomepage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WorkspaceSetHomepage'
+type MockClientCommands_WorkspaceSetHomepage_Call struct {
+	*mock.Call
+}
+
+// WorkspaceSetHomepage is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 *pb.RpcWorkspaceSetHomepageRequest
+func (_e *MockClientCommands_Expecter) WorkspaceSetHomepage(_a0 interface{}, _a1 interface{}) *MockClientCommands_WorkspaceSetHomepage_Call {
+	return &MockClientCommands_WorkspaceSetHomepage_Call{Call: _e.mock.On("WorkspaceSetHomepage", _a0, _a1)}
+}
+
+func (_c *MockClientCommands_WorkspaceSetHomepage_Call) Run(run func(_a0 context.Context, _a1 *pb.RpcWorkspaceSetHomepageRequest)) *MockClientCommands_WorkspaceSetHomepage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*pb.RpcWorkspaceSetHomepageRequest))
+	})
+	return _c
+}
+
+func (_c *MockClientCommands_WorkspaceSetHomepage_Call) Return(_a0 *pb.RpcWorkspaceSetHomepageResponse) *MockClientCommands_WorkspaceSetHomepage_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClientCommands_WorkspaceSetHomepage_Call) RunAndReturn(run func(context.Context, *pb.RpcWorkspaceSetHomepageRequest) *pb.RpcWorkspaceSetHomepageResponse) *MockClientCommands_WorkspaceSetHomepage_Call {
 	_c.Call.Return(run)
 	return _c
 }
