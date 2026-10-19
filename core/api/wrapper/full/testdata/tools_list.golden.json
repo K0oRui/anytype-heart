@@ -1750,6 +1750,159 @@
    }
   },
   {
+   "name": "set_objects_properties",
+   "description": "Set properties on many objects. The body's set, unset, add and remove mean exactly what they mean in a set_properties op, applied to every id with that object's own checks. A batch is not atomic; the answer lists what applied and what refused.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "add": {
+      "additionalProperties": {
+       "items": {},
+       "type": "array"
+      },
+      "type": "object"
+     },
+     "dry_run": {
+      "description": "Validate the batch without committing",
+      "type": "boolean"
+     },
+     "ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "remove": {
+      "additionalProperties": {
+       "items": {},
+       "type": "array"
+      },
+      "type": "object"
+     },
+     "set": {
+      "additionalProperties": {},
+      "type": "object"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "unset": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "set_objects_archived",
+   "description": "Archive or restore objects. The bulk form of DELETE on an object: the same creator-provenance gate and user-content allowlist run for every id, and archived=false takes objects back out of the Bin. A batch is not atomic; the answer lists what applied and what refused.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "archived": {
+      "description": "Archived defaults to true. false restores (unarchives).",
+      "type": "boolean"
+     },
+     "dry_run": {
+      "description": "Validate the batch without committing",
+      "type": "boolean"
+     },
+     "ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "create_object_from_url",
+   "description": "Create an object from a URL. Mints a bookmark object from a link, with the page's title, description and image already filled in. The fetch is synchronous. Set further properties afterwards with PATCH on the object or on many objects at once.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "add_page_content": {
+      "description": "AddPageContent stores the page's readable content as blocks.",
+      "type": "boolean"
+     },
+     "dry_run": {
+      "description": "Validate the body without fetching",
+      "type": "boolean"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "template": {
+      "description": "Template is the template the object starts from.",
+      "type": "string"
+     },
+     "type": {
+      "description": "Type is the type the object takes; defaults to the bookmark type.",
+      "type": "string"
+     },
+     "url": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "set_objects_type",
+   "description": "Change the type of many objects. Each object goes through the same type change a PATCH set_type op makes, including the layout conversion table. The answer lists the objects that converted and the refusals beside them.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the batch without committing",
+      "type": "boolean"
+     },
+     "ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "type": {
+      "description": "Type is the type every object becomes, by key, api key or name.",
+      "type": "string"
+     }
+    },
+    "required": [
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
    "name": "get_object",
    "description": "Get an object. A `block` subtree comes back flagged as a subtree, and no write path accepts that partial body. `format=md` is read-only; markdown cannot be sent back.",
    "inputSchema": {
@@ -1906,6 +2059,96 @@
    }
   },
   {
+   "name": "convert_object",
+   "description": "Convert an object into a set or collection. A set is based on one or more types and answers the query; a collection is assembled by adding items, so it takes no source. Conversion is one way: the object keeps its id.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "object_id": {
+      "description": "Object id, from `search_space` or `list_objects`",
+      "type": "string"
+     },
+     "source": {
+      "description": "Source names the type(s) a set is based on; required for \"set\",\nrefused for \"collection\".",
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "to": {
+      "description": "To is \"set\" or \"collection\".",
+      "type": "string"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "set_object_cover",
+   "description": "Set an object's cover. The cover is an image object in this space, a flat colour, or a gradient. An image takes scale, x and y to position the crop.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "color": {
+      "description": "Color is a flat colour name, for format=color. The store keeps the name\nas the app's picker spells it.",
+      "type": "string"
+     },
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "file": {
+      "description": "File is an image object id in this space, for format=image.",
+      "type": "string"
+     },
+     "format": {
+      "description": "Format is \"image\", \"color\" or \"gradient\".",
+      "type": "string"
+     },
+     "gradient": {
+      "description": "Gradient is a gradient name, for format=gradient.",
+      "type": "string"
+     },
+     "object_id": {
+      "description": "Object id, from `search_space` or `list_objects`",
+      "type": "string"
+     },
+     "scale": {
+      "description": "Scale, X and Y position an image cover, for format=image.",
+      "type": "number"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     },
+     "x": {
+      "type": "number"
+     },
+     "y": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
    "name": "create_discussion",
    "description": "Start an object's discussion. A discussion is the comment thread under an object, and it is a chat: the returned id is the `chat_id` for every chat operation, where `reply_to` makes a threaded reply. An object that already has one answers 200 with the same id and no `created`, so the call is safe to repeat. An object read serves the id as `discussion`. Chats, types, templates and system objects cannot hold one.",
    "inputSchema": {
@@ -1918,6 +2161,200 @@
      "object_id": {
       "description": "Object id, from `search_space` or `list_objects`",
       "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "duplicate_object",
+   "description": "Duplicate an object. Creates a copy with a new id and the same type and content; the source is left untouched.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without committing",
+      "type": "boolean"
+     },
+     "object_id": {
+      "description": "Object id, from `search_space` or `list_objects`",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "set_object_icon",
+   "description": "Set an object's icon. The icon is one of four variants chosen by format: an emoji, an image object in this space, a built-in icon name, or a flat colour. A colour tints the first three; it is a palette name (grey, yellow, orange, red, pink, purple, blue, ice, teal or lime).",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "color": {
+      "description": "Color tints the icon, or is the icon itself for format=color. It is a\npalette name: grey, yellow, orange, red, pink, purple, blue, ice, teal\nor lime, the same ten the app's picker offers.",
+      "type": "string"
+     },
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "emoji": {
+      "description": "Emoji is the glyph, for format=emoji.",
+      "type": "string"
+     },
+     "file": {
+      "description": "File is an image object id in this space, for format=file.",
+      "type": "string"
+     },
+     "format": {
+      "description": "Format is \"emoji\", \"file\", \"icon\" or \"color\".",
+      "type": "string"
+     },
+     "name": {
+      "description": "Name is a built-in icon name, for format=icon.",
+      "type": "string"
+     },
+     "object_id": {
+      "description": "Object id, from `search_space` or `list_objects`",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "set_object_items_order",
+   "description": "Reorder a collection's items. Replaces the item order of a collection with the given ids. Ids the collection does not hold are ignored; an item left out keeps its relative place after the listed ones.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+     },
+     "object_id": {
+      "description": "Collection id, from `create_collection` or `list_objects`",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "set_object_layout",
+   "description": "Change an object's layout. Layout is what the object looks like, not what it is: a note becomes a page without changing type. Sets and collections get their content from POST …/convert, not from a layout change.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "layout": {
+      "description": "Layout is a layout name, as the type schemas spell it: basic, todo,\nnote, profile, bookmark, set, collection, and the media layouts.",
+      "type": "string"
+     },
+     "object_id": {
+      "description": "Object id, from `search_space` or `list_objects`",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "refresh_object",
+   "description": "Refresh a bookmark. Fetches the object's stored source link again and updates its title, description and image. The fetch runs after the answer, so the 202 says only that it started; read the object back to see the result.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate without starting the fetch",
+      "type": "boolean"
+     },
+     "object_id": {
+      "description": "Object id, from `search_space` or `list_objects`",
+      "type": "string"
+     },
+     "space_id": {
+      "description": "Space id, from `list_spaces`",
+      "type": "string"
+     }
+    },
+    "required": [
+     "object_id",
+     "space_id"
+    ],
+    "type": "object"
+   }
+  },
+  {
+   "name": "set_object_source",
+   "description": "Change a set's source. Replaces the types a set is based on. A source the space does not hold, or a source that yields no viewable content, is refused rather than written.",
+   "inputSchema": {
+    "additionalProperties": false,
+    "properties": {
+     "dry_run": {
+      "description": "Validate the body without committing",
+      "type": "boolean"
+     },
+     "object_id": {
+      "description": "Object id, from `search_space` or `list_objects`",
+      "type": "string"
+     },
+     "source": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
      },
      "space_id": {
       "description": "Space id, from `list_spaces`",

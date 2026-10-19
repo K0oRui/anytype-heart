@@ -106,7 +106,7 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 	var jsonDoc responseContractDocument
 	require.NoError(t, json.Unmarshal(jsonBody, &jsonDoc))
 	jsonOperations := responseContractOperations(t, jsonDoc)
-	require.Len(t, jsonOperations, 77)
+	require.Len(t, jsonOperations, 89)
 
 	yamlBody, err := os.ReadFile("../docs/v2/openapi.yaml")
 	require.NoError(t, err)
@@ -200,11 +200,12 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 	for _, operation := range jsonOperations {
 		pairCount += len(operation.Responses)
 	}
-	assert.Equal(t, 516, pairCount, "the checked-in response inventory changes only deliberately")
+	assert.Equal(t, 612, pairCount, "the checked-in response inventory changes only deliberately")
 
 	dryRunCreates := stringSet(
 		"add_chat_message", "create_chat", "create_collection", "create_invite", "create_object", "create_property",
 		"create_query", "create_space", "create_template", "create_type", "create_widget", "upload_file",
+		"duplicate_object", "create_object_from_url",
 	)
 	idempotent := stringSet(
 		"validate", "create_space", "update_space", "create_object", "create_template", "create_type",
@@ -223,6 +224,9 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 		"decline_member", "approve_leave", "cancel_join",
 		"share_space", "stop_sharing_space", "change_space_ownership", "delete_space",
 		"set_space_homepage",
+		"duplicate_object", "set_objects_archived", "set_objects_type", "set_objects_properties",
+		"set_object_layout", "convert_object", "set_object_source", "refresh_object",
+		"create_object_from_url", "set_object_icon", "set_object_cover", "set_object_items_order",
 	)
 	requestBodyLimited := stringSet(
 		"add_chat_message", "create_chat", "create_collection", "create_property", "create_query", "create_space",
@@ -232,6 +236,9 @@ func TestV2OpenAPIResponsePolicies(t *testing.T) {
 		"create_invite", "update_invite", "join_space", "add_members", "update_member_permissions",
 		"remove_members", "approve_member", "decline_member", "approve_leave", "change_space_ownership",
 		"set_space_homepage",
+		"set_objects_archived", "set_objects_type", "set_objects_properties", "set_object_layout",
+		"convert_object", "set_object_source", "create_object_from_url", "set_object_icon",
+		"set_object_cover", "set_object_items_order",
 	)
 
 	// A concurrency cap is not a rate limit: the streams refuse when too many

@@ -125,13 +125,15 @@ func (d *sdataview) SetSourceInSet(ctx session.Context, source []string) (err er
 
 	srcBlock, err := d.buildBlockBySource(dv.Model().Content.(*model.BlockContentOfDataview), source)
 	if err != nil {
-		log.Errorf("failed to build dataview block to modify view relation lists: %v", err)
-	} else {
-		dv.SetRelations(srcBlock.Dataview.RelationLinks)
-		for i, view := range dv.ListViews() {
-			if err = dv.SetView(view.Id, *srcBlock.Dataview.Views[i]); err != nil {
-				return fmt.Errorf("failed to update view '%s' of set '%s': %w", view.Id, s.RootId(), err)
-			}
+		// A source the editor cannot build a view for must refuse the whole
+		// change: writing setOf anyway would leave the set pointing at types
+		// its view relations were never built for.
+		return fmt.Errorf("failed to build dataview block from source %v: %w", source, err)
+	}
+	dv.SetRelations(srcBlock.Dataview.RelationLinks)
+	for i, view := range dv.ListViews() {
+		if err = dv.SetView(view.Id, *srcBlock.Dataview.Views[i]); err != nil {
+			return fmt.Errorf("failed to update view '%s' of set '%s': %w", view.Id, s.RootId(), err)
 		}
 	}
 	s.SetDetailAndBundledRelation(bundle.RelationKeySetOf, domain.StringList(source))

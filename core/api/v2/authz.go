@@ -156,6 +156,23 @@ var v2RouteAuthz = map[string]RouteAuthz{
 	// edit surface (registerEditRoutes)
 	routeKey(http.MethodPatch, "/v2/spaces/:space_id/objects/:object_id"):  {Verb: RouteVerbWrite},
 	routeKey(http.MethodDelete, "/v2/spaces/:space_id/objects/:object_id"): {Verb: RouteVerbWrite},
+	// object administration surface (registerObjectAdminRoutes). Every route
+	// is a mutation of the space's objects. The two bulk routes and the
+	// archive route act through a body rather than a path parameter, so the
+	// grant check is the service's space-write check, the same backstop
+	// every other write on this surface relies on.
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/objects/:object_id/duplicate"): {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/objects/archive"):              {Verb: RouteVerbWrite},
+	routeKey(http.MethodPatch, "/v2/spaces/:space_id/objects/type"):                {Verb: RouteVerbWrite},
+	routeKey(http.MethodPatch, "/v2/spaces/:space_id/objects"):                     {Verb: RouteVerbWrite},
+	routeKey(http.MethodPatch, "/v2/spaces/:space_id/objects/:object_id/layout"):   {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/objects/:object_id/convert"):   {Verb: RouteVerbWrite},
+	routeKey(http.MethodPatch, "/v2/spaces/:space_id/objects/:object_id/source"):   {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/objects/:object_id/refresh"):   {Verb: RouteVerbWrite},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/objects/from-url"):             {Verb: RouteVerbWrite},
+	routeKey(http.MethodPut, "/v2/spaces/:space_id/objects/:object_id/icon"):       {Verb: RouteVerbWrite},
+	routeKey(http.MethodPut, "/v2/spaces/:space_id/objects/:object_id/cover"):      {Verb: RouteVerbWrite},
+	routeKey(http.MethodPut, "/v2/spaces/:space_id/objects/:object_id/items"):      {Verb: RouteVerbWrite},
 	// chat surface (registerChatRoutes)
 	routeKey(http.MethodGet, "/v2/spaces/:space_id/chats"):                                          {Verb: RouteVerbRead},
 	routeKey(http.MethodPost, "/v2/spaces/:space_id/chats"):                                         {Verb: RouteVerbWrite},
@@ -181,13 +198,13 @@ var v2RouteAuthz = map[string]RouteAuthz{
 	// than echoing an id the key cannot reach. The order routes touch only
 	// account preference (no space data), and the object-list route acts on
 	// the selected space, which the service checks.
-	routeKey(http.MethodGet, "/v2/spaces/:space_id/invite"):       {Verb: RouteVerbRead},
-	routeKey(http.MethodPost, "/v2/spaces/:space_id/invite"):      {Verb: RouteVerbWrite},
-	routeKey(http.MethodPatch, "/v2/spaces/:space_id/invite"):     {Verb: RouteVerbWrite},
-	routeKey(http.MethodDelete, "/v2/spaces/:space_id/invite"):    {Verb: RouteVerbWrite},
-	routeKey(http.MethodGet, "/v2/spaces/:space_id/invite/guest"): {Verb: RouteVerbRead},
-	routeKey(http.MethodGet, "/v2/invites/:invite_cid"):           {Verb: RouteVerbRead, Global: GlobalScopedDenied},
-	routeKey(http.MethodPost, "/v2/invites/:invite_cid/join"):     {Verb: RouteVerbWrite, Global: GlobalScopedDenied},
+	routeKey(http.MethodGet, "/v2/spaces/:space_id/invite"):           {Verb: RouteVerbRead},
+	routeKey(http.MethodPost, "/v2/spaces/:space_id/invite"):          {Verb: RouteVerbWrite},
+	routeKey(http.MethodPatch, "/v2/spaces/:space_id/invite"):         {Verb: RouteVerbWrite},
+	routeKey(http.MethodDelete, "/v2/spaces/:space_id/invite"):        {Verb: RouteVerbWrite},
+	routeKey(http.MethodGet, "/v2/spaces/:space_id/invite/guest"):     {Verb: RouteVerbRead},
+	routeKey(http.MethodGet, "/v2/invites/:invite_cid"):               {Verb: RouteVerbRead, Global: GlobalScopedDenied},
+	routeKey(http.MethodPost, "/v2/invites/:invite_cid/join"):         {Verb: RouteVerbWrite, Global: GlobalScopedDenied},
 	routeKey(http.MethodPost, "/v2/spaces/:space_id/members"):         {Verb: RouteVerbWrite},
 	routeKey(http.MethodPatch, "/v2/spaces/:space_id/members"):        {Verb: RouteVerbWrite},
 	routeKey(http.MethodPost, "/v2/spaces/:space_id/members/remove"):  {Verb: RouteVerbWrite},

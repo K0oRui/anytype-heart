@@ -452,6 +452,86 @@ func registerCreateRoutes(v2 *gin.RouterGroup, deps RouteDeps, idempotencyMW gin
 		v2handler.UploadFileHandler(deps.Service),
 	)
 	registerSpaceAdminRoutes(v2, deps, idempotencyMW)
+	registerObjectAdminRoutes(v2, deps, idempotencyMW)
+}
+
+// registerObjectAdminRoutes registers the object administration surface: the
+// verbs that act on a whole object and the bulk forms of archive, type and
+// property writes. Every one is a mutation, so all of them carry the C8
+// idempotency middleware and the write limiter.
+func registerObjectAdminRoutes(v2 *gin.RouterGroup, deps RouteDeps, idempotencyMW gin.HandlerFunc) {
+	v2.POST("/spaces/:space_id/objects/:object_id/duplicate",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2DuplicateObject"),
+		v2handler.DuplicateObjectHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/objects/archive",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectsArchived"),
+		v2handler.SetObjectsArchivedHandler(deps.Service),
+	)
+	v2.PATCH("/spaces/:space_id/objects/type",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectsType"),
+		v2handler.SetObjectsTypeHandler(deps.Service),
+	)
+	v2.PATCH("/spaces/:space_id/objects",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectsProperties"),
+		v2handler.SetObjectsPropertiesHandler(deps.Service),
+	)
+	v2.PATCH("/spaces/:space_id/objects/:object_id/layout",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectLayout"),
+		v2handler.SetObjectLayoutHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/objects/:object_id/convert",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2ConvertObject"),
+		v2handler.ConvertObjectHandler(deps.Service),
+	)
+	v2.PATCH("/spaces/:space_id/objects/:object_id/source",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectSource"),
+		v2handler.SetObjectSourceHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/objects/:object_id/refresh",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2RefreshObject"),
+		v2handler.RefreshObjectHandler(deps.Service),
+	)
+	v2.POST("/spaces/:space_id/objects/from-url",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2CreateObjectFromUrl"),
+		v2handler.CreateObjectFromUrlHandler(deps.Service),
+	)
+	v2.PUT("/spaces/:space_id/objects/:object_id/icon",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectIcon"),
+		v2handler.SetObjectIconHandler(deps.Service),
+	)
+	v2.PUT("/spaces/:space_id/objects/:object_id/cover",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectCover"),
+		v2handler.SetObjectCoverHandler(deps.Service),
+	)
+	v2.PUT("/spaces/:space_id/objects/:object_id/items",
+		deps.WriteRateLimit,
+		idempotencyMW,
+		deps.AnalyticsEvent("V2SetObjectItemsOrder"),
+		v2handler.SetObjectItemsOrderHandler(deps.Service),
+	)
 }
 
 // registerSpaceAdminRoutes registers the space administration surface:

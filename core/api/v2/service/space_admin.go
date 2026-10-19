@@ -7,8 +7,8 @@ package v2service
 // because a route can be reached without the gate in tests.
 //
 // C9 dry runs validate the request and report the shape without calling the
-// RPC — none of these mutations can be simulated — and every mutation runs
-// behind the route-level C8 idempotency middleware.
+// RPC, because none of these mutations can be simulated, and every mutation
+// runs behind the route-level C8 idempotency middleware.
 
 import (
 	"context"
@@ -137,7 +137,7 @@ func checkIdentity(path, value string) error {
 // error enum's own name. Every Space command carries its own enum, but the
 // code names are a shared vocabulary (NO_SUCH_SPACE, INCORRECT_PERMISSIONS,
 // NOT_SHAREABLE, …), so one name-keyed mapper classifies all of them
-// correctly — a numeric table would mislabel the codes that mean different
+// correctly: a numeric table would mislabel the codes that mean different
 // things in different commands.
 func spaceCommandError(op string, code fmt.Stringer, description string) error {
 	name := code.String()
@@ -680,4 +680,3 @@ func (s *Service) SetSpaceHomepage(ctx context.Context, spaceId string, req v2mo
 	}
 	return &v2model.AcceptResponse{}, nil
 }
-

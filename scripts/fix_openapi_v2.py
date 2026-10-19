@@ -122,6 +122,8 @@ DRY_RUN_CREATES = {
     "create_type",
     "create_widget",
     "upload_file",
+    "duplicate_object",
+    "create_object_from_url",
 }
 
 IDEMPOTENT_OPERATIONS = {
@@ -168,6 +170,18 @@ IDEMPOTENT_OPERATIONS = {
     "change_space_ownership",
     "delete_space",
     "set_space_homepage",
+    "duplicate_object",
+    "set_objects_archived",
+    "set_objects_type",
+    "set_objects_properties",
+    "set_object_layout",
+    "convert_object",
+    "set_object_source",
+    "refresh_object",
+    "create_object_from_url",
+    "set_object_icon",
+    "set_object_cover",
+    "set_object_items_order",
 }
 
 WRITE_LIMITED_OPERATIONS = IDEMPOTENT_OPERATIONS - {"validate"}
@@ -203,6 +217,16 @@ REQUEST_BODY_LIMITED_OPERATIONS = {
     "approve_leave",
     "change_space_ownership",
     "set_space_homepage",
+    "set_objects_archived",
+    "set_objects_type",
+    "set_objects_properties",
+    "set_object_layout",
+    "convert_object",
+    "set_object_source",
+    "create_object_from_url",
+    "set_object_icon",
+    "set_object_cover",
+    "set_object_items_order",
 }
 
 

@@ -456,6 +456,28 @@ components:
           description: Permissions defaults to "viewer".
           type: string
       type: object
+    BulkFailure:
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+      type: object
+    BulkResult:
+      properties:
+        dry_run:
+          type: boolean
+        failed:
+          items:
+            $ref: '#/components/schemas/BulkFailure'
+          type: array
+          uniqueItems: false
+        ids:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
     ChangeOwnershipRequest:
       properties:
         new_owner_identity:
@@ -646,6 +668,20 @@ components:
         dry_run:
           type: boolean
       type: object
+    ConvertObjectRequest:
+      properties:
+        source:
+          description: |-
+            Source names the type(s) a set is based on; required for "set",
+            refused for "collection".
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        to:
+          description: To is "set" or "collection".
+          type: string
+      type: object
     CreateChatRequest:
       properties:
         name:
@@ -668,6 +704,21 @@ components:
             ShareWithinSpace stores the invite in the space, so every member can
             share it. Otherwise only the owner can.
           type: boolean
+      type: object
+    CreateObjectFromUrlRequest:
+      properties:
+        add_page_content:
+          description: AddPageContent stores the page's readable content as blocks.
+          type: boolean
+        template:
+          description: Template is the template the object starts from.
+          type: string
+        type:
+          description: Type is the type the object takes; defaults to the bookmark
+            type.
+          type: string
+        url:
+          type: string
       type: object
     CreateResult:
       properties:
@@ -1205,6 +1256,51 @@ components:
         role:
           type: string
       type: object
+    ObjectCoverRequest:
+      properties:
+        color:
+          description: |-
+            Color is a flat colour name, for format=color. The store keeps the name
+            as the app's picker spells it.
+          type: string
+        file:
+          description: File is an image object id in this space, for format=image.
+          type: string
+        format:
+          description: Format is "image", "color" or "gradient".
+          type: string
+        gradient:
+          description: Gradient is a gradient name, for format=gradient.
+          type: string
+        scale:
+          description: Scale, X and Y position an image cover, for format=image.
+          type: number
+        x:
+          type: number
+        "y":
+          type: number
+      type: object
+    ObjectIconRequest:
+      properties:
+        color:
+          description: |-
+            Color tints the icon, or is the icon itself for format=color. It is a
+            palette name: grey, yellow, orange, red, pink, purple, blue, ice, teal
+            or lime, the same ten the app's picker offers.
+          type: string
+        emoji:
+          description: Emoji is the glyph, for format=emoji.
+          type: string
+        file:
+          description: File is an image object id in this space, for format=file.
+          type: string
+        format:
+          description: Format is "emoji", "file", "icon" or "color".
+          type: string
+        name:
+          description: Name is a built-in icon name, for format=icon.
+          type: string
+      type: object
     ObjectRow:
       properties:
         discussion:
@@ -1316,6 +1412,78 @@ components:
     SetHomepageRequest:
       properties:
         homepage:
+          type: string
+      type: object
+    SetObjectItemsRequest:
+      properties:
+        ids:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+    SetObjectLayoutRequest:
+      properties:
+        layout:
+          description: |-
+            Layout is a layout name, as the type schemas spell it: basic, todo,
+            note, profile, bookmark, set, collection, and the media layouts.
+          type: string
+      type: object
+    SetObjectSourceRequest:
+      properties:
+        source:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+    SetObjectsArchivedRequest:
+      properties:
+        archived:
+          description: Archived defaults to true. false restores (unarchives).
+          type: boolean
+        ids:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+    SetObjectsPropertiesRequest:
+      properties:
+        add:
+          additionalProperties:
+            items: {}
+            type: array
+          type: object
+        ids:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        remove:
+          additionalProperties:
+            items: {}
+            type: array
+          type: object
+        set:
+          additionalProperties: {}
+          type: object
+        unset:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+    SetObjectsTypeRequest:
+      properties:
+        ids:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        type:
+          description: Type is the type every object becomes, by key, api key or name.
           type: string
       type: object
     SideEffects:
@@ -4962,6 +5130,70 @@ paths:
       summary: List objects
       tags:
       - Objects
+    patch:
+      description: The body's set, unset, add and remove mean exactly what they mean
+        in a set_properties op, applied to every id with that object's own checks.
+        A batch is not atomic; the answer lists what applied and what refused.
+      operationId: set_objects_properties
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the batch without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetObjectsPropertiesRequest'
+        description: The objects and the property edits
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkResult'
+          description: Updated ids and refusals
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Set properties on many objects
+      tags:
+      - Objects
     post:
       description: A select value naming an option the property does not hold is refused
         unless `create_missing_options=true` is set. An unknown type or property key
@@ -5349,6 +5581,147 @@ paths:
       summary: Update an object
       tags:
       - Objects
+  /v2/spaces/{space_id}/objects/{object_id}/convert:
+    post:
+      description: 'A set is based on one or more types and answers the query; a collection
+        is assembled by adding items, so it takes no source. Conversion is one way:
+        the object keeps its id.'
+      operationId: convert_object
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Object id, from POST /v2/spaces/{space_id}/search or GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the body without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConvertObjectRequest'
+        description: The target and a set's source
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptResponse'
+          description: Converted
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Convert an object into a set or collection
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/{object_id}/cover:
+    put:
+      description: The cover is an image object in this space, a flat colour, or a
+        gradient. An image takes scale, x and y to position the crop.
+      operationId: set_object_cover
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Object id, from POST /v2/spaces/{space_id}/search or GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the body without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectCoverRequest'
+        description: The cover variant
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptResponse'
+          description: Cover set
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown or incomplete cover
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Set an object's cover
+      tags:
+      - Objects
   /v2/spaces/{space_id}/objects/{object_id}/discussion:
     post:
       description: 'A discussion is the comment thread under an object, and it is
@@ -5420,6 +5793,623 @@ paths:
       summary: Start an object's discussion
       tags:
       - Chat
+  /v2/spaces/{space_id}/objects/{object_id}/duplicate:
+    post:
+      description: Creates a copy with a new id and the same type and content; the
+        source is left untouched.
+      operationId: duplicate_object
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Object id, from POST /v2/spaces/{space_id}/search or GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResult'
+          description: Dry run; validation result without committing
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResult'
+          description: 'The copy: its id and type'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Duplicate an object
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/{object_id}/icon:
+    put:
+      description: 'The icon is one of four variants chosen by format: an emoji, an
+        image object in this space, a built-in icon name, or a flat colour. A colour
+        tints the first three; it is a palette name (grey, yellow, orange, red, pink,
+        purple, blue, ice, teal or lime).'
+      operationId: set_object_icon
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Object id, from POST /v2/spaces/{space_id}/search or GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the body without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectIconRequest'
+        description: The icon variant
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptResponse'
+          description: Icon set
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown or incomplete icon
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Set an object's icon
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/{object_id}/items:
+    put:
+      description: Replaces the item order of a collection with the given ids. Ids
+        the collection does not hold are ignored; an item left out keeps its relative
+        place after the listed ones.
+      operationId: set_object_items_order
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Collection id, from POST /v2/spaces/{space_id}/collections or
+          GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the body without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetObjectItemsRequest'
+        description: The new item order
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptResponse'
+          description: Order saved
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Reorder a collection's items
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/{object_id}/layout:
+    patch:
+      description: 'Layout is what the object looks like, not what it is: a note becomes
+        a page without changing type. Sets and collections get their content from
+        POST …/convert, not from a layout change.'
+      operationId: set_object_layout
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Object id, from POST /v2/spaces/{space_id}/search or GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the body without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetObjectLayoutRequest'
+        description: The layout name
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptResponse'
+          description: Layout changed
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown layout name
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Change an object's layout
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/{object_id}/refresh:
+    post:
+      description: Fetches the object's stored source link again and updates its title,
+        description and image. The fetch runs after the answer, so the 202 says only
+        that it started; read the object back to see the result.
+      operationId: refresh_object
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Object id, from POST /v2/spaces/{space_id}/search or GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate without starting the fetch
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptResponse'
+          description: Fetch started
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The object has no source link
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Refresh a bookmark
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/{object_id}/source:
+    patch:
+      description: Replaces the types a set is based on. A source the space does not
+        hold, or a source that yields no viewable content, is refused rather than
+        written.
+      operationId: set_object_source
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Object id, from POST /v2/spaces/{space_id}/search or GET /v2/spaces/{space_id}/objects
+        in: path
+        name: object_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the body without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetObjectSourceRequest'
+        description: The types the set is based on
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptResponse'
+          description: Source replaced
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Object or space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Change a set's source
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/archive:
+    post:
+      description: 'The bulk form of DELETE on an object: the same creator-provenance
+        gate and user-content allowlist run for every id, and archived=false takes
+        objects back out of the Bin. A batch is not atomic; the answer lists what
+        applied and what refused.'
+      operationId: set_objects_archived
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the batch without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetObjectsArchivedRequest'
+        description: The objects and the target state
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkResult'
+          description: Applied ids and refusals
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Archive or restore objects
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/from-url:
+    post:
+      description: Mints a bookmark object from a link, with the page's title, description
+        and image already filled in. The fetch is synchronous. Set further properties
+        afterwards with PATCH on the object or on many objects at once.
+      operationId: create_object_from_url
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the body without fetching
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateObjectFromUrlRequest'
+        description: The link and the object's type
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResult'
+          description: Dry run; validation result without committing
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResult'
+          description: 'The new bookmark: its id and type'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Space or type not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Create an object from a URL
+      tags:
+      - Objects
+  /v2/spaces/{space_id}/objects/type:
+    patch:
+      description: Each object goes through the same type change a PATCH set_type
+        op makes, including the layout conversion table. The answer lists the objects
+        that converted and the refusals beside them.
+      operationId: set_objects_type
+      parameters:
+      - description: Space id, from GET /v2/spaces
+        in: path
+        name: space_id
+        required: true
+        schema:
+          type: string
+      - description: Validate the batch without committing
+        in: query
+        name: dry_run
+        schema:
+          type: boolean
+      - description: 'Replay guard: the same key with the same body replays the stored
+          response'
+        in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetObjectsTypeRequest'
+        description: The objects and the type they become
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkResult'
+          description: Converted ids and refusals
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation failure, including an unknown type
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Space not found
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "413":
+          $ref: '#/components/responses/RequestTooLarge'
+        "429":
+          $ref: '#/components/responses/RateLimited'
+      security:
+      - bearerauth: []
+      summary: Change the type of many objects
+      tags:
+      - Objects
   /v2/spaces/{space_id}/ownership:
     post:
       description: Irreversible. The new owner must already be a member. old_owner_permissions

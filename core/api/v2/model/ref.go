@@ -81,53 +81,65 @@ var operations = map[string]operation{
 	OpListMembers:          {"GET", "/v2/spaces/{space_id}/members"},
 	OpGetMemberMe:          {"GET", "/v2/spaces/{space_id}/members/me"},
 	// space administration
-	OpGetInvite:                   {"GET", "/v2/spaces/{space_id}/invite"},
-	OpCreateInvite:                {"POST", "/v2/spaces/{space_id}/invite"},
-	OpUpdateInvite:                {"PATCH", "/v2/spaces/{space_id}/invite"},
-	OpRevokeInvite:                {"DELETE", "/v2/spaces/{space_id}/invite"},
-	OpGetGuestInvite:              {"GET", "/v2/spaces/{space_id}/invite/guest"},
-	OpViewInvite:                  {"GET", "/v2/invites/{invite_cid}"},
-	OpJoinSpace:                   {"POST", "/v2/invites/{invite_cid}/join"},
-	OpAddMembers:                  {"POST", "/v2/spaces/{space_id}/members"},
-	OpUpdateMemberPermissions:     {"PATCH", "/v2/spaces/{space_id}/members"},
-	OpRemoveMembers:               {"POST", "/v2/spaces/{space_id}/members/remove"},
-	OpApproveMember:               {"POST", "/v2/spaces/{space_id}/members/approve"},
-	OpDeclineMember:               {"POST", "/v2/spaces/{space_id}/members/decline"},
-	OpApproveLeave:                {"POST", "/v2/spaces/{space_id}/leave/approve"},
-	OpCancelJoin:                  {"POST", "/v2/spaces/{space_id}/join/cancel"},
-	OpShareSpace:                  {"POST", "/v2/spaces/{space_id}/sharing"},
-	OpStopSharingSpace:            {"DELETE", "/v2/spaces/{space_id}/sharing"},
-	OpChangeSpaceOwnership:        {"POST", "/v2/spaces/{space_id}/ownership"},
-	OpDeleteSpace:                 {"DELETE", "/v2/spaces/{space_id}"},
-	OpSetSpaceHomepage:            {"PUT", "/v2/spaces/{space_id}/homepage"},
-	OpListObjects:          {"GET", "/v2/spaces/{space_id}/objects"},
-	OpCreateObject:         {"POST", "/v2/spaces/{space_id}/objects"},
-	OpDeleteObject:         {"DELETE", "/v2/spaces/{space_id}/objects/{object_id}"},
-	OpGetObject:            {"GET", "/v2/spaces/{space_id}/objects/{object_id}"},
-	OpPatchObject:          {"PATCH", "/v2/spaces/{space_id}/objects/{object_id}"},
-	OpCreateDiscussion:     {"POST", "/v2/spaces/{space_id}/objects/{object_id}/discussion"},
-	OpListProperties:       {"GET", "/v2/spaces/{space_id}/properties"},
-	OpCreateProperty:       {"POST", "/v2/spaces/{space_id}/properties"},
-	OpDeleteProperty:       {"DELETE", "/v2/spaces/{space_id}/properties/{key}"},
-	OpUpdateProperty:       {"PATCH", "/v2/spaces/{space_id}/properties/{key}"},
-	OpListPropertyOptions:  {"GET", "/v2/spaces/{space_id}/properties/{key}/options"},
-	OpCreateQuery:          {"POST", "/v2/spaces/{space_id}/queries"},
-	OpGetQueryObjects:      {"GET", "/v2/spaces/{space_id}/queries/{query_id}/objects"},
-	OpGetQueryViews:        {"GET", "/v2/spaces/{space_id}/queries/{query_id}/views"},
-	OpSearchSpace:          {"POST", "/v2/spaces/{space_id}/search"},
-	OpStreamSpaceSearch:    {"POST", "/v2/spaces/{space_id}/search/stream"},
-	OpListTemplates:        {"GET", "/v2/spaces/{space_id}/templates"},
-	OpCreateTemplate:       {"POST", "/v2/spaces/{space_id}/templates"},
-	OpListTypes:            {"GET", "/v2/spaces/{space_id}/types"},
-	OpCreateType:           {"POST", "/v2/spaces/{space_id}/types"},
-	OpDeleteType:           {"DELETE", "/v2/spaces/{space_id}/types/{type}"},
-	OpGetType:              {"GET", "/v2/spaces/{space_id}/types/{type}"},
-	OpUpdateType:           {"PATCH", "/v2/spaces/{space_id}/types/{type}"},
-	OpValidate:             {"POST", "/v2/validate"},
-	OpListWidgets:          {"GET", "/v2/spaces/{space_id}/widgets"},
-	OpCreateWidget:         {"POST", "/v2/spaces/{space_id}/widgets"},
-	OpUpdateWidget:         {"PATCH", "/v2/spaces/{space_id}/widgets/{widget_id}"},
-	OpDeleteWidget:         {"DELETE", "/v2/spaces/{space_id}/widgets/{widget_id}"},
+	OpGetInvite:               {"GET", "/v2/spaces/{space_id}/invite"},
+	OpCreateInvite:            {"POST", "/v2/spaces/{space_id}/invite"},
+	OpUpdateInvite:            {"PATCH", "/v2/spaces/{space_id}/invite"},
+	OpRevokeInvite:            {"DELETE", "/v2/spaces/{space_id}/invite"},
+	OpGetGuestInvite:          {"GET", "/v2/spaces/{space_id}/invite/guest"},
+	OpViewInvite:              {"GET", "/v2/invites/{invite_cid}"},
+	OpJoinSpace:               {"POST", "/v2/invites/{invite_cid}/join"},
+	OpAddMembers:              {"POST", "/v2/spaces/{space_id}/members"},
+	OpUpdateMemberPermissions: {"PATCH", "/v2/spaces/{space_id}/members"},
+	OpRemoveMembers:           {"POST", "/v2/spaces/{space_id}/members/remove"},
+	OpApproveMember:           {"POST", "/v2/spaces/{space_id}/members/approve"},
+	OpDeclineMember:           {"POST", "/v2/spaces/{space_id}/members/decline"},
+	OpApproveLeave:            {"POST", "/v2/spaces/{space_id}/leave/approve"},
+	OpCancelJoin:              {"POST", "/v2/spaces/{space_id}/join/cancel"},
+	OpShareSpace:              {"POST", "/v2/spaces/{space_id}/sharing"},
+	OpStopSharingSpace:        {"DELETE", "/v2/spaces/{space_id}/sharing"},
+	OpChangeSpaceOwnership:    {"POST", "/v2/spaces/{space_id}/ownership"},
+	OpDeleteSpace:             {"DELETE", "/v2/spaces/{space_id}"},
+	OpSetSpaceHomepage:        {"PUT", "/v2/spaces/{space_id}/homepage"},
+	OpListObjects:             {"GET", "/v2/spaces/{space_id}/objects"},
+	OpCreateObject:            {"POST", "/v2/spaces/{space_id}/objects"},
+	OpDeleteObject:            {"DELETE", "/v2/spaces/{space_id}/objects/{object_id}"},
+	OpGetObject:               {"GET", "/v2/spaces/{space_id}/objects/{object_id}"},
+	OpPatchObject:             {"PATCH", "/v2/spaces/{space_id}/objects/{object_id}"},
+	OpCreateDiscussion:        {"POST", "/v2/spaces/{space_id}/objects/{object_id}/discussion"},
+	OpDuplicateObject:         {"POST", "/v2/spaces/{space_id}/objects/{object_id}/duplicate"},
+	OpSetObjectsArchived:      {"POST", "/v2/spaces/{space_id}/objects/archive"},
+	OpSetObjectsType:          {"PATCH", "/v2/spaces/{space_id}/objects/type"},
+	OpSetObjectsProperties:    {"PATCH", "/v2/spaces/{space_id}/objects"},
+	OpSetObjectLayout:         {"PATCH", "/v2/spaces/{space_id}/objects/{object_id}/layout"},
+	OpConvertObject:           {"POST", "/v2/spaces/{space_id}/objects/{object_id}/convert"},
+	OpSetObjectSource:         {"PATCH", "/v2/spaces/{space_id}/objects/{object_id}/source"},
+	OpRefreshObject:           {"POST", "/v2/spaces/{space_id}/objects/{object_id}/refresh"},
+	OpCreateObjectFromUrl:     {"POST", "/v2/spaces/{space_id}/objects/from-url"},
+	OpSetObjectIcon:           {"PUT", "/v2/spaces/{space_id}/objects/{object_id}/icon"},
+	OpSetObjectCover:          {"PUT", "/v2/spaces/{space_id}/objects/{object_id}/cover"},
+	OpSetObjectItemsOrder:     {"PUT", "/v2/spaces/{space_id}/objects/{object_id}/items"},
+	OpListProperties:          {"GET", "/v2/spaces/{space_id}/properties"},
+	OpCreateProperty:          {"POST", "/v2/spaces/{space_id}/properties"},
+	OpDeleteProperty:          {"DELETE", "/v2/spaces/{space_id}/properties/{key}"},
+	OpUpdateProperty:          {"PATCH", "/v2/spaces/{space_id}/properties/{key}"},
+	OpListPropertyOptions:     {"GET", "/v2/spaces/{space_id}/properties/{key}/options"},
+	OpCreateQuery:             {"POST", "/v2/spaces/{space_id}/queries"},
+	OpGetQueryObjects:         {"GET", "/v2/spaces/{space_id}/queries/{query_id}/objects"},
+	OpGetQueryViews:           {"GET", "/v2/spaces/{space_id}/queries/{query_id}/views"},
+	OpSearchSpace:             {"POST", "/v2/spaces/{space_id}/search"},
+	OpStreamSpaceSearch:       {"POST", "/v2/spaces/{space_id}/search/stream"},
+	OpListTemplates:           {"GET", "/v2/spaces/{space_id}/templates"},
+	OpCreateTemplate:          {"POST", "/v2/spaces/{space_id}/templates"},
+	OpListTypes:               {"GET", "/v2/spaces/{space_id}/types"},
+	OpCreateType:              {"POST", "/v2/spaces/{space_id}/types"},
+	OpDeleteType:              {"DELETE", "/v2/spaces/{space_id}/types/{type}"},
+	OpGetType:                 {"GET", "/v2/spaces/{space_id}/types/{type}"},
+	OpUpdateType:              {"PATCH", "/v2/spaces/{space_id}/types/{type}"},
+	OpValidate:                {"POST", "/v2/validate"},
+	OpListWidgets:             {"GET", "/v2/spaces/{space_id}/widgets"},
+	OpCreateWidget:            {"POST", "/v2/spaces/{space_id}/widgets"},
+	OpUpdateWidget:            {"PATCH", "/v2/spaces/{space_id}/widgets/{widget_id}"},
+	OpDeleteWidget:            {"DELETE", "/v2/spaces/{space_id}/widgets/{widget_id}"},
 }
 
 // The operationIds, as constants so a hint site cannot misspell one.
@@ -168,6 +180,18 @@ const (
 	OpGetObject            = "get_object"
 	OpPatchObject          = "patch_object"
 	OpCreateDiscussion     = "create_discussion"
+	OpDuplicateObject      = "duplicate_object"
+	OpSetObjectsArchived   = "set_objects_archived"
+	OpSetObjectsType       = "set_objects_type"
+	OpSetObjectsProperties = "set_objects_properties"
+	OpSetObjectLayout      = "set_object_layout"
+	OpConvertObject        = "convert_object"
+	OpSetObjectSource      = "set_object_source"
+	OpRefreshObject        = "refresh_object"
+	OpCreateObjectFromUrl  = "create_object_from_url"
+	OpSetObjectIcon        = "set_object_icon"
+	OpSetObjectCover       = "set_object_cover"
+	OpSetObjectItemsOrder  = "set_object_items_order"
 	OpListProperties       = "list_properties"
 	OpCreateProperty       = "create_property"
 	OpDeleteProperty       = "delete_property"
@@ -191,25 +215,25 @@ const (
 	OpUpdateWidget         = "update_widget"
 	OpDeleteWidget         = "delete_widget"
 	// space administration
-	OpGetInvite                  = "get_invite"
-	OpCreateInvite               = "create_invite"
-	OpUpdateInvite               = "update_invite"
-	OpRevokeInvite               = "revoke_invite"
-	OpGetGuestInvite             = "get_guest_invite"
-	OpViewInvite                 = "view_invite"
-	OpJoinSpace                  = "join_space"
-	OpAddMembers                 = "add_members"
-	OpUpdateMemberPermissions    = "update_member_permissions"
-	OpRemoveMembers              = "remove_members"
-	OpApproveMember              = "approve_member"
-	OpDeclineMember              = "decline_member"
-	OpApproveLeave               = "approve_leave"
-	OpCancelJoin                 = "cancel_join"
-	OpShareSpace                 = "share_space"
-	OpStopSharingSpace           = "stop_sharing_space"
-	OpChangeSpaceOwnership       = "change_space_ownership"
-	OpDeleteSpace                = "delete_space"
-	OpSetSpaceHomepage           = "set_space_homepage"
+	OpGetInvite               = "get_invite"
+	OpCreateInvite            = "create_invite"
+	OpUpdateInvite            = "update_invite"
+	OpRevokeInvite            = "revoke_invite"
+	OpGetGuestInvite          = "get_guest_invite"
+	OpViewInvite              = "view_invite"
+	OpJoinSpace               = "join_space"
+	OpAddMembers              = "add_members"
+	OpUpdateMemberPermissions = "update_member_permissions"
+	OpRemoveMembers           = "remove_members"
+	OpApproveMember           = "approve_member"
+	OpDeclineMember           = "decline_member"
+	OpApproveLeave            = "approve_leave"
+	OpCancelJoin              = "cancel_join"
+	OpShareSpace              = "share_space"
+	OpStopSharingSpace        = "stop_sharing_space"
+	OpChangeSpaceOwnership    = "change_space_ownership"
+	OpDeleteSpace             = "delete_space"
+	OpSetSpaceHomepage        = "set_space_homepage"
 )
 
 // Operation returns the method and path template of an operationId, and

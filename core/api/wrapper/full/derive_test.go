@@ -379,8 +379,10 @@ func TestToolsListSizeCeiling(t *testing.T) {
 	// lookups and the retry key on the reaction toggle only; 69,753 once
 	// the edit tools list each op's members, the document bodies type their
 	// containers and search publishes its members; 80,412 with the 19 space
-	// administration tools. The ceiling leaves about a tenth of headroom.
-	const ceiling = 88 << 10
+	// administration tools; 90,247 with the 12 object administration tools.
+	// The ceiling leaves about a sixth of headroom, room for the block,
+	// table and schema-write batches this surface is still growing into.
+	const ceiling = 104 << 10
 	table := deriveReal(t)
 	got, err := table.ListJSON()
 	require.NoError(t, err)

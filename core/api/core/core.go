@@ -262,12 +262,28 @@ type ClientCommands interface {
 	ObjectSetObjectType(context.Context, *pb.RpcObjectSetObjectTypeRequest) *pb.RpcObjectSetObjectTypeResponse
 	ObjectAddDiscussion(context.Context, *pb.RpcObjectDiscussionAddRequest) *pb.RpcObjectDiscussionAddResponse
 
+	// Object administration (APIV2 object operations)
+	ObjectDuplicate(context.Context, *pb.RpcObjectDuplicateRequest) *pb.RpcObjectDuplicateResponse
+	ObjectListDuplicate(context.Context, *pb.RpcObjectListDuplicateRequest) *pb.RpcObjectListDuplicateResponse
+	ObjectUndo(context.Context, *pb.RpcObjectUndoRequest) *pb.RpcObjectUndoResponse
+	ObjectRedo(context.Context, *pb.RpcObjectRedoRequest) *pb.RpcObjectRedoResponse
+	ObjectSetLayout(context.Context, *pb.RpcObjectSetLayoutRequest) *pb.RpcObjectSetLayoutResponse
+	ObjectToSet(context.Context, *pb.RpcObjectToSetRequest) *pb.RpcObjectToSetResponse
+	ObjectToCollection(context.Context, *pb.RpcObjectToCollectionRequest) *pb.RpcObjectToCollectionResponse
+	ObjectSetSource(context.Context, *pb.RpcObjectSetSourceRequest) *pb.RpcObjectSetSourceResponse
+	ObjectBookmarkFetch(context.Context, *pb.RpcObjectBookmarkFetchRequest) *pb.RpcObjectBookmarkFetchResponse
+	ObjectCreateFromUrl(context.Context, *pb.RpcObjectCreateFromUrlRequest) *pb.RpcObjectCreateFromUrlResponse
+	ObjectListSetIsArchived(context.Context, *pb.RpcObjectListSetIsArchivedRequest) *pb.RpcObjectListSetIsArchivedResponse
+	ObjectListSetObjectType(context.Context, *pb.RpcObjectListSetObjectTypeRequest) *pb.RpcObjectListSetObjectTypeResponse
+	ObjectListModifyDetailValues(context.Context, *pb.RpcObjectListModifyDetailValuesRequest) *pb.RpcObjectListModifyDetailValuesResponse
+
 	// Type
 	ObjectCreateObjectType(context.Context, *pb.RpcObjectCreateObjectTypeRequest) *pb.RpcObjectCreateObjectTypeResponse
 
 	// List
 	ObjectCollectionAdd(context.Context, *pb.RpcObjectCollectionAddRequest) *pb.RpcObjectCollectionAddResponse
 	ObjectCollectionRemove(context.Context, *pb.RpcObjectCollectionRemoveRequest) *pb.RpcObjectCollectionRemoveResponse
+	ObjectCollectionSort(context.Context, *pb.RpcObjectCollectionSortRequest) *pb.RpcObjectCollectionSortResponse
 
 	// Property
 	ObjectRelationAddFeatured(context.Context, *pb.RpcObjectRelationAddFeaturedRequest) *pb.RpcObjectRelationAddFeaturedResponse
