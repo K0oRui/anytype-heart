@@ -366,7 +366,7 @@ func TestV2WidgetSchemasArePinned(t *testing.T) {
 		Components struct {
 			Schemas map[string]struct {
 				Properties map[string]struct {
-					Type string `yaml:"type"`
+					Type any    `yaml:"type"`
 					Ref  string `yaml:"$ref"`
 				} `yaml:"properties"`
 			} `yaml:"schemas"`
@@ -511,5 +511,37 @@ func TestV2WidgetSchemasArePinned(t *testing.T) {
 		}
 		assert.True(t, found, "%s %s advertises Idempotency-Key", route.method, route.path)
 		assert.True(t, foundYaml, "%s %s advertises Idempotency-Key in yaml", route.method, route.path)
+	}
+}
+
+// Two shapes a Go struct tag cannot express, pinned in both forms. A key
+// timestamp is null when unknown or never (WhoamiKey's fields are *string),
+// and the filters kind's worked example is an array, the one kind whose
+// request body is one. Declared as a plain string and a plain object, both
+// fail a client that validates a response against the published schema.
+func TestV2NullableAndUnionSchemasArePinned(t *testing.T) {
+	for _, name := range []string{"../docs/v2/openapi.json", "../docs/v2/openapi.yaml"} {
+		body, err := os.ReadFile(name)
+		require.NoError(t, err)
+		var doc struct {
+			Components struct {
+				Schemas map[string]struct {
+					Properties map[string]struct {
+						Type any `json:"type" yaml:"type"`
+					} `json:"properties" yaml:"properties"`
+				} `json:"schemas" yaml:"schemas"`
+			} `json:"components" yaml:"components"`
+		}
+		if strings.HasSuffix(name, ".json") {
+			require.NoError(t, json.Unmarshal(body, &doc))
+		} else {
+			require.NoError(t, yaml.Unmarshal(body, &doc))
+		}
+		for _, field := range []string{"created_at", "expires_at"} {
+			assert.Equal(t, []any{"string", "null"}, doc.Components.Schemas["WhoamiKey"].Properties[field].Type,
+				"%s WhoamiKey.%s is nullable", name, field)
+		}
+		assert.Equal(t, []any{"object", "array"}, doc.Components.Schemas["SchemaEntry"].Properties["example"].Type,
+			"%s SchemaEntry.example takes the filters kind's array", name)
 	}
 }

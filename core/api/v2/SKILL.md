@@ -108,7 +108,7 @@ whether you may write. Ask this instead of discovering limits through 403s
 
 `PATCH …/objects/{id}` body `{"ops":[…]}` — one atomic batch (≤512 ops,
 ≤256 blocks per op): any invalid op rejects the whole PATCH with
-`ops[i]`-addressed issues. Fourteen ops:
+`ops[i]`-addressed issues. Twenty-three ops:
 
 ```json
 { "ops": [

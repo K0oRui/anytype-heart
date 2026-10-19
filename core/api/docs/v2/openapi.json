@@ -1482,7 +1482,10 @@
             "type": "string"
           },
           "example": {
-            "type": "object"
+            "type": [
+              "object",
+              "array"
+            ]
           },
           "example_body": {
             "description": "An op schema's example wrapped as the request body it is sent in",
@@ -1916,10 +1919,16 @@
       "WhoamiKey": {
         "properties": {
           "created_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "expires_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "id": {
             "description": "An identifier of the key record, the one the key list in Settings shows: the hex sha256 of the key's raw bytes, never the token itself",

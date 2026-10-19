@@ -492,6 +492,48 @@ def apply_yaml_schema_required(lines: list[str]) -> list[str]:
     return lines
 
 
+# swag renders a Go `*string` as a plain string and a `json.RawMessage` as a
+# fixed object; neither can express what the wire carries. An unknown or
+# never key timestamp is null, and the filters kind's example is an array
+# (the one kind whose body is one). Declared plain, either fails a client
+# that validates a response against the published schema.
+NULLABLE_KEY_TIMESTAMPS = {"WhoamiKey": ("created_at", "expires_at")}
+UNION_EXAMPLE = ("SchemaEntry", "example")
+
+
+def apply_union_shapes(doc: dict) -> None:
+    for name, fields in NULLABLE_KEY_TIMESTAMPS.items():
+        properties = doc["components"]["schemas"][name]["properties"]
+        for field in fields:
+            if field not in properties:
+                raise ValueError(f"{name} has no {field} property to widen")
+            properties[field]["type"] = ["string", "null"]
+    name, field = UNION_EXAMPLE
+    properties = doc["components"]["schemas"][name]["properties"]
+    if field not in properties:
+        raise ValueError(f"{name} has no {field} property to widen")
+    properties[field]["type"] = ["object", "array"]
+
+
+def yaml_property_type(lines: list[str], schema: str, field: str) -> int:
+    """The index of one component property's `type:` line, bounded to its block."""
+    schema_at = lines.index(f"    {schema}:\n")
+    field_at = lines.index(f"        {field}:\n", schema_at)
+    end = next((i for i in range(field_at + 1, len(lines))
+                if lines[i].strip() and not lines[i].startswith("          ")), len(lines))
+    return next(i for i in range(field_at + 1, end) if lines[i].startswith("          type:"))
+
+
+def apply_yaml_union_shapes(lines: list[str]) -> list[str]:
+    """The YAML twin of apply_union_shapes."""
+    for name, fields in NULLABLE_KEY_TIMESTAMPS.items():
+        for field in fields:
+            lines[yaml_property_type(lines, name, field)] = "          type: [string, 'null']\n"
+    name, field = UNION_EXAMPLE
+    lines[yaml_property_type(lines, name, field)] = "          type: [object, array]\n"
+    return lines
+
+
 def upload_request_body():
     return {
         "content": {
@@ -644,6 +686,7 @@ def fix_json(path: pathlib.Path, bodies: dict) -> None:
     apply_stream_content_type(doc)
     apply_file_responses(doc)
     apply_schema_required(doc)
+    apply_union_shapes(doc)
     path.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n")
 
 
@@ -813,6 +856,7 @@ def fix_yaml(path: pathlib.Path, bodies: dict) -> None:
     lines = apply_yaml_stream_content_type(lines)
     lines = apply_yaml_file_responses(lines)
     lines = apply_yaml_schema_required(lines)
+    lines = apply_yaml_union_shapes(lines)
     path.write_text("".join(lines))
 
 
